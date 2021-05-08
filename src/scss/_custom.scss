@@ -1,0 +1,90 @@
+// Here you can add other styles
+
+.mr5 {
+  margin-right: 5px;
+}
+.mb10 {
+  margin-bottom: 20px;
+}
+.radio input[type="radio"] {
+  position: relative;
+}
+.radio label:before {
+  /*styles outer circle*/
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  margin: 0 5px 0 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 11px;
+  background-color: transparent;
+}
+
+.radio label {
+  position: relative;
+}
+table {
+  background-color: white;
+}
+.mr0 {
+  margin-right: 0px;
+}
+.table-bordered td,
+.table thead th {
+  border: 1px solid #c8ced3;
+  vertical-align: inherit;
+}
+.modals {
+  align-items: center;
+  border: none;
+}
+.modals-header {
+  border: none;
+  margin: 0;
+}
+.modals-header h3 {
+  display: table-cell;
+  color: white;
+}
+.modals-footer {
+  border-top: none;
+  justify-content: center;
+}
+.image-profile {
+  position: absolute;
+  transform: translate(-50px, -51px);
+  background: white;
+  padding: 6px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+.Logo {
+  display: block;
+  max-width: 300px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.section-login {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.Toastify__toast-body {
+  text-align: center;
+}
+.spinner-page {
+  position: fixed;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
