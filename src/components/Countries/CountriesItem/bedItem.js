@@ -46,8 +46,7 @@ function BedItem(props) {
   const detailBed = async () => {
     try {
       var res = await onDetailBeds(idBed);
-      setRoomId(res.data.roomId);
-      setBedName(res.data.bedName);
+      setBedName(res.data.countryName);
     } catch (error) {
       console.log(error);
     }
@@ -94,9 +93,8 @@ function BedItem(props) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      bedName: bedName,
-      roomId: roomId,
-      status: true,
+      countryName: bedName,
+      imageId: ["string"],
     };
     if (isValid) {
       return onUpDateBeds(idBed, body)
@@ -125,37 +123,8 @@ function BedItem(props) {
   return (
     <tr key={index}>
       <td>{index + 1 + (currentPage - 1) * pageSize}</td>
-      <td>{item.bedName}</td>
+      <td>{item.countryName}</td>
       <td>{item.room ? item.room.roomName : ""}</td>
-      <td>
-        <Switch checked={item.status} onChange={onToggleModals}></Switch>
-        <Modal isOpen={modals} className="modals modal-dialog-centered">
-          <ModalHeader
-            toggle={onToggleModals}
-            className="modals-header"
-          ></ModalHeader>
-          <ModalBody>
-            <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to {item.status ? "inactivate" : "activate"} this bed?
-            </p>
-          </ModalBody>
-          <ModalFooter className="modals-footer">
-            <Button
-              color="primary"
-              onClick={() => {
-                onToggleModals();
-                onChangeStatus(item);
-              }}
-            >
-              Submit
-            </Button>{" "}
-            &nbsp;
-            <Button color="danger" onClick={onToggleModals}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </td>
       <td>
         <button
           type="button"
@@ -169,10 +138,10 @@ function BedItem(props) {
           children={
             <Form>
               <FormGroup className="mb-3">
-                <Label>Bed Number</Label>
+                <Label>Country Name</Label>
                 <Input
                   type="text"
-                  placeholder="Bed number"
+                  placeholder="Country Name"
                   value={bedName}
                   onChange={onChangeBedName}
                   invalid={validBed}
@@ -181,16 +150,13 @@ function BedItem(props) {
               </FormGroup>
 
               <FormGroup className="mb-3">
-                <Label>Room Name</Label>
+                <Label>Image</Label>
                 <Input
-                  type="select"
+                  type="file"
                   name="select"
                   onChange={onChangeRoomId}
                   value={roomId}
-                >
-                  <option selected>choose a room</option>
-                  {elOption}
-                </Input>
+                ></Input>
               </FormGroup>
             </Form>
           }

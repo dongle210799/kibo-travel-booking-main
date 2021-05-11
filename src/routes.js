@@ -1,16 +1,17 @@
 import React from "react";
 
 const User = React.lazy(() => import("./views/User/user"));
-const Dashboard = React.lazy(() => import("./views/Dashboard/Dashboard"));
 const Patients = React.lazy(() => import("./views/Patients/patients"));
-const Bed = React.lazy(() => import("./views/Bed/bed"));
+const Bed = React.lazy(() => import("./views/Countries/countries"));
 const Nurse = React.lazy(() => import("./views/Nurse/nurse"));
 const Room = React.lazy(() => import("./views/Room/room"));
 
 const user = React.lazy(() => import("./components/User/addUser/user"));
 const room = React.lazy(() => import("./components/Room/addRoom/room"));
 const nurse = React.lazy(() => import("./components/Nurse/addNurse/nurse"));
-const bed = React.lazy(() => import("./components/Bed/addBed/bed"));
+const bed = React.lazy(() =>
+  import("./components/Countries/addCountries/Countries")
+);
 const patient = React.lazy(() =>
   import("./components/Patient/addPatient/patient")
 );
@@ -78,8 +79,6 @@ const routes = [
     name: "Detail Patient",
     component: patient,
   },
-
-  { path: "/admin/dashboards", name: "Dashboards", component: Dashboard },
   { path: "/admin/patients", name: "Patients", component: Patients },
   { path: "/admin/beds", name: "Beds", component: Bed },
   { path: "/admin/nurses", name: "Nurses", component: Nurse },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import BedItem from "../../components/Bed/bedItem/bedItem";
+import BedItem from "../../components/Countries/CountriesItem/bedItem";
 import { onShowBeds, onUpDateStatus, onDeleteBed } from "../../apis/beds";
 import Loading from "../../components/loading/loading";
 import PaginationApp from "../../components/Pagination/pagination";
@@ -34,12 +34,13 @@ function Bed() {
     try {
       setLoading(true);
       const res = await onShowBeds(currentPage, pageSize, textSearch);
+      console.log(res.data);
       setLoading(false);
-      setListBed(res.data.data);
-      setCurrentPage(res.data.pagitation.currentPage);
-      setPageSize(res.data.pagitation.pageSize);
-      setTotalCout(res.data.pagitation.totalCount);
-      setTotalPage(res.data.pagitation.totalPage);
+      setListBed(res.data.items);
+      setCurrentPage(res.data.meta.currentPage);
+      setPageSize(res.data.meta.itemsPerPage);
+      setTotalCout(res.data.meta.totalItems);
+      setTotalPage(res.data.meta.totalPages);
     } catch (error) {
       console.log(error);
     }
@@ -58,9 +59,10 @@ function Bed() {
       const result = await onShowBeds(currentPage, pageSize, textSearch);
       console.log(result);
       const { data } = result;
-      setListBed(data.data);
-      setTotalCout(data.pagitation.totalCount);
-      setTotalPage(data.pagitation.totalPage);
+      console.log(data);
+      setListBed(data.items);
+      setTotalCout(data.meta.totalItems);
+      setTotalPage(data.meta.totalPages);
       if (currentPage !== 1 && data.data.length === 0) {
         setCurrentPage(currentPage - 1);
       }
@@ -148,9 +150,8 @@ function Bed() {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Bed Number</th>
-                  <th>Room Name</th>
-                  <th>Active</th>
+                  <th>Country Name</th>
+                  <th>Image</th>
                   <th>Action</th>
                 </tr>
               </thead>

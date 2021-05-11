@@ -81,8 +81,8 @@ function Admin(props) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      bedName: bedName,
-      roomId: roomId,
+      countryName: bedName,
+      imageId: ["string"],
     };
     if (isValid) {
       return onCreateBeds(body)
@@ -102,9 +102,8 @@ function Admin(props) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      bedName: bedName,
-      roomId: roomId,
-      status: true,
+      countryName: bedName,
+      imageId: "",
     };
     if (isValid) {
       return onUpDateBeds(params.id, body)
@@ -134,13 +133,13 @@ function Admin(props) {
       <Col xl="6" md="6" xs="12" className="mx-auto">
         <Card className="mx-4">
           <CardBody className="p-4">
-            <Form onSubmit={params.id ? onDetail : onSubmit}>
-              <h1>{params.id ? "Bed Detail" : "Create Bed"}</h1>
+            <Form onSubmit={onSubmit}>
+              <h1>Create Country</h1>
               <FormGroup className="mb-3">
-                <Label>Bed Number</Label>
+                <Label>Country Name</Label>
                 <Input
                   type="text"
-                  placeholder="Bed number"
+                  placeholder="Country Name"
                   value={bedName}
                   onChange={onChangeBedName}
                   invalid={validBed}
@@ -149,16 +148,16 @@ function Admin(props) {
               </FormGroup>
 
               <FormGroup className="mb-3">
-                <Label>Room Name</Label>
+                <Label>Image</Label>
                 <Input
-                  type="select"
+                  type="file"
                   name="select"
                   onChange={onChangeRoomId}
                   value={roomId}
-                >
-                  <option selected>choose a room</option>
+                />
+                {/* <option selected>choose a room</option>
                   {elOption}
-                </Input>
+                </Input> */}
               </FormGroup>
 
               <Button color="success">Submit</Button>

@@ -68,7 +68,7 @@ function DefaultLayout(props) {
                     />
                   ) : null;
                 })}
-                <Redirect from="/" to="/admin/dashboards" />
+                <Redirect from="/" to="/admin/users" />
               </Switch>
             </Suspense>
           </Container>

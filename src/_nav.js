@@ -1,14 +1,5 @@
 export default {
   items: [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboards",
-      icon: "icon-speedometer",
-      badge: {
-        variant: "info",
-        text: "NEW",
-      },
-    },
     // {
     //   title: true,
     //   name: "admin",
@@ -23,6 +14,10 @@ export default {
       name: "Users",
       url: "/admin/users",
       icon: "icon-user",
+      // badge: {
+      //   variant: "info",
+      //   text: "NEW",
+      // },
     },
     {
       name: "Patients",
@@ -35,7 +30,7 @@ export default {
       icon: "icon-people",
     },
     {
-      name: "Beds",
+      name: "Countries",
       url: "/admin/beds",
       icon: "icon-note",
     },
