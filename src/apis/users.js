@@ -2,7 +2,7 @@ import { callAPI } from "../helper";
 import axios from "axios";
 
 export const onRegister = (body) => {
-  return callAPI("api/v1/users", "POST", body);
+  return callAPI("api/v1/users/admin_create_user", "POST", body);
 };
 export const onShowlistAdmin = (page, pageSize, body) => {
   return callAPI(`api/v1/users`, "GET", body);

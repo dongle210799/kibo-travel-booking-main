@@ -25,6 +25,7 @@ function Admin(props) {
   const [ID, setID] = useState("");
   const [detail, setDetail] = useState();
   const [email, setEmail] = useState();
+  const [role, setRole] = useState("USER");
   const [password, setPassword] = useState();
   const [userName, setUserName] = useState();
   const [firstname, setFirstname] = useState();
@@ -63,7 +64,8 @@ function Admin(props) {
     let passwordError = "";
     let userError = "";
 
-    const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
+    const regEmail =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
 
     if (!email) {
       emailError = "Email is not blank";
@@ -138,9 +140,9 @@ function Admin(props) {
   // function onChangedate(e) {
   //   setDateofbirth(moment().format(e.target.value));
   // }
-  // function onChangerole(e) {
-  //   setRole(e.target.value);
-  // }
+  function onChangerole(e) {
+    setRole(e.target.value);
+  }
   // function onChangegender(e) {
   //   setGender(e.target.value);
   // }
@@ -152,7 +154,7 @@ function Admin(props) {
       username: userName,
       passsword: password,
       email: email,
-
+      roles: [role],
       firstName: firstname,
       lastName: lastname,
       age: age,
@@ -176,15 +178,15 @@ function Admin(props) {
     }
   }
 
-  // var elOption = Array.isArray(arrRole)
-  //   ? arrRole.map((option, i) => {
-  //       return (
-  //         <option key={i} value={option.value}>
-  //           {option.title}
-  //         </option>
-  //       );
-  //     })
-  //   : "";
+  var elOption = Array.isArray(arrRole)
+    ? arrRole.map((option, i) => {
+        return (
+          <option key={i} value={option.value}>
+            {option.title}
+          </option>
+        );
+      })
+    : "";
   return (
     <Row>
       <Col xl="6" md="6" xs="12" className="mx-auto">
@@ -277,7 +279,17 @@ function Admin(props) {
                   onChange={onChangeAge}
                 />
               </FormGroup>
-
+              <FormGroup className="mb-3">
+                <Label for="Email">Role</Label>
+                <Input
+                  type="select"
+                  name="select"
+                  value={role}
+                  onChange={onChangerole}
+                >
+                  {elOption}
+                </Input>
+              </FormGroup>
               {/* {user.id === ID ? (
                 <FormGroup className="mb-3">
                   <Label for="Email">Role</Label>
@@ -290,17 +302,7 @@ function Admin(props) {
                   ></Input>
                 </FormGroup>
               ) : (
-                <FormGroup className="mb-3">
-                  <Label for="Email">Role</Label>
-                  <Input
-                    type="select"
-                    name="select"
-                    value={role}
-                    onChange={onChangerole}
-                  >
-                    {elOption}
-                  </Input>
-                </FormGroup>
+            
               )}
 
               <FormGroup className="mb-3">

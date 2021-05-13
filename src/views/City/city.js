@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import PatientItem from "../../components/Patient/patientItem/patientItem";
+import NurseItem from "../../components/city/cityItem";
 import {
-  onShowListPatient,
+  onShowlistNurse,
   onUpDateStatus,
-  onDeletePatient,
-} from "../../apis/patients";
-import { ToastContainer } from "react-toastify";
+  onDeleteNurse,
+} from "../../apis/nurses";
 import Loading from "../../components/loading/loading";
+import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 import PaginationApp from "../../components/Pagination/pagination";
@@ -21,8 +21,8 @@ import {
   Table,
 } from "reactstrap";
 
-function Patients(props) {
-  const [listPatient, setListPatient] = useState([]);
+function Admin() {
+  const [listNurse, setListNurse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [textSearch, setTextSearch] = useState("");
@@ -31,15 +31,15 @@ function Patients(props) {
   const [totalCout, setTotalCout] = useState();
   const [edit, setEdit] = useState(false);
   useEffect(() => {
-    getListPatient();
+    getListNurse();
   }, [currentPage, textSearch, edit]);
 
-  const getListPatient = async () => {
+  const getListNurse = async () => {
     try {
       setLoading(true);
-      const res = await onShowListPatient(currentPage, pageSize, textSearch);
+      const res = await onShowlistNurse(currentPage, pageSize, textSearch);
       setLoading(false);
-      setListPatient(res.data.data);
+      setListNurse(res.data.data);
       setCurrentPage(res.data.pagitation.currentPage);
       setPageSize(res.data.pagitation.pageSize);
       setTotalCout(res.data.pagitation.totalCount);
@@ -49,21 +49,13 @@ function Patients(props) {
       setLoading(false);
     }
   };
-  async function onChangeStatus(item) {
-    await onUpDateStatus(item.id);
-    getListPatient();
-    notifytoast(
-      "success",
-      `${item.status ? "Inactivated" : "Activated"} successfully`
-    );
-  }
   async function onDelete(id) {
     try {
-      await onDeletePatient(id);
-      const result = await onShowListPatient(currentPage, pageSize, textSearch);
+      await onDeleteNurse(id);
+      const result = await onShowlistNurse(currentPage, pageSize, textSearch);
       console.log(result);
       const { data } = result;
-      setListPatient(data.data);
+      setListNurse(data.data);
       setTotalCout(data.pagitation.totalCount);
       setTotalPage(data.pagitation.totalPage);
       if (currentPage !== 1 && data.data.length === 0) {
@@ -75,34 +67,43 @@ function Patients(props) {
       notifytoast("error", error.response.data.message);
     }
   }
-
-  function onHandleSearch(e) {
+  function onEdit2(e) {
+    setEdit(!edit);
+  }
+  async function onChangeStatus(item) {
+    await onUpDateStatus(item.id);
+    getListNurse();
+    notifytoast(
+      "success",
+      `${item.status ? "Inactivated" : "Activated"} successfully`
+    );
+  }
+  async function onHandleSearch(e) {
     e.preventDefault();
     setTextSearch(e.target.value);
     setCurrentPage(1);
   }
+
   async function onSearch(e) {
-    await getListPatient();
+    await getListNurse();
   }
+
   function handleClickItem(newPage) {
     setCurrentPage(newPage);
   }
-  function onEdit2(e) {
-    setEdit(!edit);
-  }
-  function showPatient(listPatient) {
+  function showNurse(listNurse) {
     var result = null;
-    if (listPatient.length > 0) {
-      result = listPatient.map((item, index) => {
+    if (listNurse.length > 0) {
+      result = listNurse.map((item, index) => {
         return (
-          <PatientItem
+          <NurseItem
             key={index}
             item={item}
             pageSize={pageSize}
             currentPage={currentPage}
+            index={index}
             onChangeStatus={onChangeStatus}
             onDelete={onDelete}
-            index={index}
             onEdit2={onEdit2}
           />
         );
@@ -126,7 +127,7 @@ function Patients(props) {
           <Col xs="9" lg="4">
             <InputGroup>
               <Input
-                placeholder="Patient Name..."
+                placeholder="Nurse name..."
                 value={textSearch}
                 onChange={onHandleSearch}
               />
@@ -140,10 +141,10 @@ function Patients(props) {
           </Col>
           <Col xs="3" lg="3">
             <Link
-              to="/admin/patients/create-patient"
+              to="/admin/nurses/create-nurse"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create patient
+              <span className="fa fa-plus mr5"></span>Create nurse
             </Link>
           </Col>
           <Col xs="12" lg="12">
@@ -151,19 +152,17 @@ function Patients(props) {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Patient Name</th>
-                  <th>Chart Number</th>
-                  <th>Bed Number</th>
                   <th>Nurse Name</th>
+                  <th>Patient Name</th>
                   <th>Active</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>{showPatient(listPatient)}</tbody>
+              <tbody>{showNurse(listNurse)}</tbody>
             </Table>
 
             <PaginationApp
-              listAdmin={listPatient}
+              listAdmin={listNurse}
               currentPage={currentPage}
               pageSize={pageSize}
               totalCount={totalCout}
@@ -178,4 +177,4 @@ function Patients(props) {
   );
 }
 
-export default Patients;
+export default Admin;

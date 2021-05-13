@@ -1,10 +1,7 @@
 import { callAPI } from "../helper";
 
 export const onShowListPatient = (page, pageSize, search) => {
-  return callAPI(
-    `patients?search=${search}&page=${page}&page_size=${pageSize}&isJoin=true&admin=true`,
-    "GET"
-  );
+  return callAPI(`api/v1/tourist-areas`, "GET");
 };
 export const onCreatePatient = (body) => {
   return callAPI("patients", "POST", body);

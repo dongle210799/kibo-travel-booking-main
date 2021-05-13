@@ -20,23 +20,23 @@ export default {
       // },
     },
     {
-      name: "Patients",
-      url: "/admin/patients",
+      name: "Tours",
+      url: "/admin/tours",
       icon: "icon-people",
     },
     {
-      name: "Nurses",
-      url: "/admin/nurses",
+      name: "Cities",
+      url: "/admin/city",
       icon: "icon-people",
     },
     {
       name: "Countries",
-      url: "/admin/beds",
+      url: "/admin/countries",
       icon: "icon-note",
     },
     {
-      name: "Rooms",
-      url: "/admin/rooms",
+      name: "Hotels",
+      url: "/admin/hotels",
       icon: "icon-list",
     },
     // {

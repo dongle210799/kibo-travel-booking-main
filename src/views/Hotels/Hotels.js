@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import NurseItem from "../../components/Nurse/nurseItem/nurseItem";
-import {
-  onShowlistNurse,
-  onUpDateStatus,
-  onDeleteNurse,
-} from "../../apis/nurses";
 import Loading from "../../components/loading/loading";
+import RoomItem from "../../components/Hotel/HotelItem/hotelItem";
+import { onShowRooms, onUpDateStatus, onDeleteRoom } from "../../apis/rooms";
+import PaginationApp from "../../components/Pagination/pagination";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
-import PaginationApp from "../../components/Pagination/pagination";
 import {
   InputGroup,
   InputGroupAddon,
@@ -21,8 +17,8 @@ import {
   Table,
 } from "reactstrap";
 
-function Admin() {
-  const [listNurse, setListNurse] = useState([]);
+function Room() {
+  const [listRoom, setListRoom] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [textSearch, setTextSearch] = useState("");
@@ -31,34 +27,44 @@ function Admin() {
   const [totalCout, setTotalCout] = useState();
   const [edit, setEdit] = useState(false);
   useEffect(() => {
-    getListNurse();
+    getListRoom();
   }, [currentPage, textSearch, edit]);
 
-  const getListNurse = async () => {
+  //get listRoom
+  const getListRoom = async () => {
     try {
       setLoading(true);
-      const res = await onShowlistNurse(currentPage, pageSize, textSearch);
+      const res = await onShowRooms(currentPage, pageSize, textSearch);
       setLoading(false);
-      setListNurse(res.data.data);
-      setCurrentPage(res.data.pagitation.currentPage);
-      setPageSize(res.data.pagitation.pageSize);
-      setTotalCout(res.data.pagitation.totalCount);
-      setTotalPage(res.data.pagitation.totalPage);
+      setListRoom(res.data.items);
+      setCurrentPage(res.data.meta.currentPage);
+      setPageSize(res.data.meta.itemsPerPage);
+      setTotalCout(res.data.meta.totalItems);
+      setTotalPage(res.data.meta.totalPages);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
+  async function onChangeStatus(item) {
+    await onUpDateStatus(item.id);
+    getListRoom();
+    notifytoast(
+      "success",
+      `${item.status ? "Inactivated" : "Activated"}  successfully`
+    );
+  }
   async function onDelete(id) {
     try {
-      await onDeleteNurse(id);
-      const result = await onShowlistNurse(currentPage, pageSize, textSearch);
+      await onDeleteRoom(id);
+      const result = await onShowRooms(currentPage, pageSize, textSearch);
       console.log(result);
       const { data } = result;
-      setListNurse(data.data);
-      setTotalCout(data.pagitation.totalCount);
-      setTotalPage(data.pagitation.totalPage);
+      setListRoom(data.items);
+      setTotalCout(data.meta.totalItems);
+      setTotalPage(data.meta.totalPages);
       if (currentPage !== 1 && data.data.length === 0) {
+        console.log("aaa");
         setCurrentPage(currentPage - 1);
       }
       notifytoast("success", "Deleted successfully");
@@ -67,17 +73,6 @@ function Admin() {
       notifytoast("error", error.response.data.message);
     }
   }
-  function onEdit2(e) {
-    setEdit(!edit);
-  }
-  async function onChangeStatus(item) {
-    await onUpDateStatus(item.id);
-    getListNurse();
-    notifytoast(
-      "success",
-      `${item.status ? "Inactivated" : "Activated"} successfully`
-    );
-  }
   async function onHandleSearch(e) {
     e.preventDefault();
     setTextSearch(e.target.value);
@@ -85,26 +80,28 @@ function Admin() {
   }
 
   async function onSearch(e) {
-    await getListNurse();
+    await getListRoom();
   }
-
   function handleClickItem(newPage) {
     setCurrentPage(newPage);
   }
-  function showNurse(listNurse) {
+  function onEdit2(e) {
+    setEdit(!edit);
+  }
+  function showRoom(listRoom) {
     var result = null;
-    if (listNurse.length > 0) {
-      result = listNurse.map((item, index) => {
+    if (listRoom.length > 0) {
+      result = listRoom.map((item, index) => {
         return (
-          <NurseItem
+          <RoomItem
             key={index}
             item={item}
             pageSize={pageSize}
             currentPage={currentPage}
-            index={index}
             onChangeStatus={onChangeStatus}
             onDelete={onDelete}
             onEdit2={onEdit2}
+            index={index}
           />
         );
       });
@@ -119,6 +116,7 @@ function Admin() {
     }
     return result;
   }
+
   return (
     <>
       {loading ? <Loading /> : ""}
@@ -127,7 +125,7 @@ function Admin() {
           <Col xs="9" lg="4">
             <InputGroup>
               <Input
-                placeholder="Nurse name..."
+                placeholder="Room name..."
                 value={textSearch}
                 onChange={onHandleSearch}
               />
@@ -141,34 +139,37 @@ function Admin() {
           </Col>
           <Col xs="3" lg="3">
             <Link
-              to="/admin/nurses/create-nurse"
+              to="/admin/rooms/create-room"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create nurse
+              <span className="fa fa-plus mr5"></span>Create room
             </Link>
           </Col>
+
           <Col xs="12" lg="12">
             <Table responsive striped bordered hover className="text-center">
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Nurse Name</th>
-                  <th>Patient Name</th>
-                  <th>Active</th>
+                  <th>Hotel Name</th>
+                  <th>Price</th>
+                  <th>City</th>
+                  <th>rate</th>
+                  <th>Country</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>{showNurse(listNurse)}</tbody>
+              <tbody>{showRoom(listRoom)}</tbody>
             </Table>
 
             <PaginationApp
-              listAdmin={listNurse}
+              listAdmin={listRoom}
               currentPage={currentPage}
               pageSize={pageSize}
               totalCount={totalCout}
               totalPage={totalPage}
               handleClickItem={handleClickItem}
-            />
+            ></PaginationApp>
             <ToastContainer />
           </Col>
         </Row>
@@ -177,4 +178,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default Room;

@@ -1,23 +1,23 @@
 import { callAPI } from "../helper";
 
 export const onCreateRoom = (body) => {
-  return callAPI("rooms", "POST", body);
+  return callAPI("api/v1/hotels", "POST", body);
 };
 export const onShowRooms = (page, pageSize, search) => {
-  return callAPI(
-    `rooms?page=${page}&page_size=${pageSize}&search=${search}&isJoin=false`,
-    "GET"
-  );
+  return callAPI(`api/v1/hotels`, "GET");
 };
 export const onDetailRoom = (id) => {
-  return callAPI(`rooms/detail/${id}`, "GET");
+  return callAPI(`api/v1/hotels/getDetail/${id}`, "GET");
 };
 export const onUpDateRoom = (id, body) => {
-  return callAPI(`rooms/update/${id}`, "PUT", body);
+  return callAPI(`api/v1/hotels/updateHotel/${id}`, "PUT", body);
 };
 export const onUpDateStatus = (id) => {
   return callAPI(`rooms/${id}/status`, "PATCH");
 };
 export const onDeleteRoom = (id) => {
-  return callAPI(`rooms/${id}`, "DELETE");
+  return callAPI(`api/v1/hotels/deleteHotel/${id}`, "DELETE");
+};
+export const onShowcity = () => {
+  return callAPI(`api/v1/cities`, "GET");
 };
