@@ -21,3 +21,6 @@ export const onDeleteRoom = (id) => {
 export const onShowcity = () => {
   return callAPI(`api/v1/cities`, "GET");
 };
+export const onUploadImage = (image) => {
+  return callAPI("api/v1/media/upload", "POST", image);
+};

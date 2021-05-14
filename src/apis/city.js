@@ -1,13 +1,10 @@
 import { callAPI } from "../helper";
 
 export const onCreateNurse = (body) => {
-  return callAPI("nurses", "POST", body);
+  return callAPI("/api/v1/cities", "POST", body);
 };
 export const onShowlistNurse = (page, pageSize, search) => {
-  return callAPI(
-    `nurses?page=${page}&page_size=${pageSize}&search=${search}&isJoin=true`,
-    "GET"
-  );
+  return callAPI(`api/v1/cities`, "GET");
 };
 export const onDetailNurse = (id) => {
   return callAPI(`nurses/detail/${id}`, "GET");

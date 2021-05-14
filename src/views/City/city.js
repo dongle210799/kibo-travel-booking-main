@@ -5,7 +5,7 @@ import {
   onShowlistNurse,
   onUpDateStatus,
   onDeleteNurse,
-} from "../../apis/nurses";
+} from "../../apis/city";
 import Loading from "../../components/loading/loading";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../helper/index";
@@ -39,11 +39,11 @@ function Admin() {
       setLoading(true);
       const res = await onShowlistNurse(currentPage, pageSize, textSearch);
       setLoading(false);
-      setListNurse(res.data.data);
-      setCurrentPage(res.data.pagitation.currentPage);
-      setPageSize(res.data.pagitation.pageSize);
-      setTotalCout(res.data.pagitation.totalCount);
-      setTotalPage(res.data.pagitation.totalPage);
+      setListNurse(res.data.items);
+      setCurrentPage(res.data.meta.currentPage);
+      setPageSize(res.data.meta.itemsPerPage);
+      setTotalCout(res.data.meta.totalItems);
+      setTotalPage(res.data.meta.totalPages);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -152,9 +152,9 @@ function Admin() {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Nurse Name</th>
-                  <th>Patient Name</th>
-                  <th>Active</th>
+                  <th>City Name</th>
+                  <th>Country Name</th>
+                  <th>image</th>
                   <th>Action</th>
                 </tr>
               </thead>

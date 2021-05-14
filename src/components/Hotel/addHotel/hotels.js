@@ -16,14 +16,16 @@ import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 
-import _, { isBuffer } from "lodash";
-import { onDetailRoom, onCreateRoom, onShowcity } from "../../../apis/rooms";
+import _, { isBuffer, uniqueId } from "lodash";
+import { onUploadImage, onCreateRoom, onShowcity } from "../../../apis/hotels";
 function Admin(props) {
   const [detail, setDetail] = useState();
   const [room, setRoom] = useState();
   const [price, setPrice] = useState();
   const [cityId, setCityId] = useState();
   const [city, setCity] = useState();
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
   const [getCity, setGetCity] = useState();
   const [roomError, setRoomError] = useState();
   const [validRoom, setValidRoom] = useState(false);
@@ -31,10 +33,14 @@ function Admin(props) {
   const [validPrice, setValidPrice] = useState(false);
   const [cityError, setCityError] = useState();
   const [validCity, setValidCity] = useState(false);
+  const [file, setFile] = useState(null);
   const { params } = props.match;
   useEffect(() => {
     GetCity();
   }, []);
+  useEffect(() => {
+    onUpdateAvatars();
+  }, [image]);
   function validate() {
     let roomError = "";
     let priceError = "";
@@ -67,6 +73,12 @@ function Admin(props) {
     setPrice(e.target.value);
     setValidRoom(false);
   }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
   function onChangeCityId(e) {
     setCityId(e.target.value);
     setValidCity(false);
@@ -79,13 +91,23 @@ function Admin(props) {
       console.log(error);
     }
   };
+  function onUpdateAvatars(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+        console.log(res.data[0].id);
+      })
+      .catch((err) => {});
+  }
   function onSubmit(e) {
     e.preventDefault();
     const isValid = validate();
     const body = {
       hotelName: room,
       price: price,
-      imageId: ["string"],
+      imageId: [`${imageId}`],
       cityId: cityId,
     };
     if (isValid) {
@@ -116,7 +138,7 @@ function Admin(props) {
         <Card className="mx-4">
           <CardBody className="p-8">
             <Form onSubmit={onSubmit}>
-              <h1>{params.id ? "Room Detail" : "Create Room"}</h1>
+              <h1>Create Hotel</h1>
               <FormGroup className="mb-3">
                 <Label for="Email">Hotel Name</Label>
                 <Input
@@ -140,6 +162,24 @@ function Admin(props) {
                 />
                 {priceError ? <FormFeedback>{priceError}</FormFeedback> : null}
               </FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">Image</Label>
+                <CustomInput
+                  type="file"
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
               <FormGroup>
                 <Label>City</Label>
                 <CustomInput
@@ -151,7 +191,7 @@ function Admin(props) {
                   invalid={validCity}
                   required
                 >
-                  <option selected>choose a Bed</option>
+                  <option selected>choose a City</option>
 
                   {elmCity}
                 </CustomInput>

@@ -16,7 +16,7 @@ import "antd/dist/antd.css";
 import ModalApp from "../../Modals/modals";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
-import { onDetailRoom, onUpDateRoom, onShowcity } from "../../../apis/rooms";
+import { onDetailRoom, onUpDateRoom, onShowcity } from "../../../apis/hotels";
 import _ from "lodash";
 function RoomItem(props) {
   const [room, setRoom] = useState();
@@ -33,6 +33,7 @@ function RoomItem(props) {
   const [modals, setModals] = useState(false);
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
+  const [modals5, setModals5] = useState(false);
   const [idRoom, setIdRoom] = useState(null);
 
   var {
@@ -152,6 +153,39 @@ function RoomItem(props) {
       <td>{item.hotelName}</td>
       <td>{item.price}</td>
       <td>{item.__cities__.cityName}</td>
+      <td>
+        {" "}
+        {item.areaMedias[0] ? (
+          <div>
+            <img
+              onClick={() => setModals5(true)}
+              id="frame"
+              alt="your image"
+              src={item.areaMedias[0].filePath}
+              name="aboutme"
+              border="0"
+              className="image-table"
+            />
+            <ModalApp
+              modal={modals5}
+              toggleModal={() => setModals5(false)}
+              children={
+                <img
+                  onClick={() => setModals5(true)}
+                  id="frame"
+                  alt="your image"
+                  src={item.areaMedias[0].filePath}
+                  name="aboutme"
+                  border="0"
+                  className="image-modal"
+                />
+              }
+            />
+          </div>
+        ) : (
+          ""
+        )}
+      </td>
       <td>{item.rates}</td>
       <td>{item.__cities__.__countries__.countryName}</td>
       <td>

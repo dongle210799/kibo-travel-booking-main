@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Loading from "../../components/loading/loading";
 import RoomItem from "../../components/Hotel/HotelItem/hotelItem";
-import { onShowRooms, onUpDateStatus, onDeleteRoom } from "../../apis/rooms";
+import { onShowRooms, onUpDateStatus, onDeleteRoom } from "../../apis/hotels";
 import PaginationApp from "../../components/Pagination/pagination";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../helper/index";
@@ -142,7 +142,7 @@ function Room() {
               to="/admin/rooms/create-room"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create room
+              <span className="fa fa-plus mr5"></span>Create Hotel
             </Link>
           </Col>
 
@@ -154,6 +154,7 @@ function Room() {
                   <th>Hotel Name</th>
                   <th>Price</th>
                   <th>City</th>
+                  <th>Image</th>
                   <th>rate</th>
                   <th>Country</th>
                   <th>Action</th>

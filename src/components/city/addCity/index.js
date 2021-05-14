@@ -20,7 +20,7 @@ import {
   onDetailNurse,
   onCreateNurse,
   onUpDateNurse,
-} from "../../../apis/nurses";
+} from "../../../apis/city";
 function Admin(props) {
   const [detail, setDetail] = useState();
   const [nurse, setNurse] = useState();

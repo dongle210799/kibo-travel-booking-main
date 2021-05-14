@@ -15,7 +15,7 @@ import "antd/dist/antd.css";
 import ModalApp from "../../Modals/modals";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
-import { onDetailNurse, onUpDateNurse } from "../../../apis/nurses";
+import { onDetailNurse, onUpDateNurse } from "../../../apis/city";
 import _ from "lodash";
 function NurseItem(props) {
   const [nurse, setNurse] = useState();
@@ -95,48 +95,19 @@ function NurseItem(props) {
         });
     }
   }
-  const patients = item.patients;
-  var listPatients = Array.isArray(patients)
-    ? patients.map((option, i) => {
-        return option.patientName;
-      })
-    : "";
+  // const patients = item.patients;
+  // var listPatients = Array.isArray(patients)
+  //   ? patients.map((option, i) => {
+  //       return option.patientName;
+  //     })
+  //   : "";
 
   return (
     <tr key={index}>
       <td>{index + 1 + (currentPage - 1) * pageSize}</td>
-      <td>{item.nurseName}</td>
-      <td>{listPatients + "  "}</td>
-      <td>
-        <Switch checked={item.status} onChange={onToggleModals}></Switch>
-        <Modal isOpen={modals} className="modals modal-dialog-centered">
-          <ModalHeader
-            toggle={onToggleModals}
-            className="modals-header"
-          ></ModalHeader>
-          <ModalBody>
-            <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to {item.status ? "inactivate" : "activate"} this
-              nurse?
-            </p>
-          </ModalBody>
-          <ModalFooter className="modals-footer">
-            <Button
-              color="primary"
-              onClick={() => {
-                onToggleModals();
-                onChangeStatus(item);
-              }}
-            >
-              Submit
-            </Button>{" "}
-            &nbsp;
-            <Button color="danger" onClick={onToggleModals}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </td>
+      <td>{item.cityName}</td>
+      <td>{item.__countries__.countryName}</td>
+      <td></td>
       <td>
         <button
           type="button"
