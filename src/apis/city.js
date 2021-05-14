@@ -1,7 +1,7 @@
 import { callAPI } from "../helper";
 
 export const onCreateNurse = (body) => {
-  return callAPI("/api/v1/cities", "POST", body);
+  return callAPI("api/v1/cities", "POST", body);
 };
 export const onShowlistNurse = (page, pageSize, search) => {
   return callAPI(`api/v1/cities`, "GET");
@@ -17,4 +17,7 @@ export const onUpDateStatus = (id) => {
 };
 export const onDeleteNurse = (id) => {
   return callAPI(`nurses/${id}`, "DELETE");
+};
+export const onShowcountry = () => {
+  return callAPI(`api/v1/countries`, "GET");
 };

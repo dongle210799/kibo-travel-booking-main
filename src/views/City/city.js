@@ -144,7 +144,7 @@ function Admin() {
               to="/admin/nurses/create-nurse"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create nurse
+              <span className="fa fa-plus mr5"></span>Create city
             </Link>
           </Col>
           <Col xs="12" lg="12">

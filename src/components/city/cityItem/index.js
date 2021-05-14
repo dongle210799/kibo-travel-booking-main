@@ -24,6 +24,7 @@ function NurseItem(props) {
   const [modals, setModals] = useState(false);
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
+  const [modals5, setModals5] = useState(false);
   const [idNurse, setIdNurse] = useState(null);
   var {
     item,
@@ -107,7 +108,38 @@ function NurseItem(props) {
       <td>{index + 1 + (currentPage - 1) * pageSize}</td>
       <td>{item.cityName}</td>
       <td>{item.__countries__.countryName}</td>
-      <td></td>
+      <td>
+        {item.cityMedias[0] ? (
+          <div>
+            <img
+              onClick={() => setModals5(true)}
+              id="frame"
+              alt="your image"
+              src={item.cityMedias[0].filePath}
+              name="aboutme"
+              border="0"
+              className="image-table"
+            />
+            <ModalApp
+              modal={modals5}
+              toggleModal={() => setModals5(false)}
+              children={
+                <img
+                  onClick={() => setModals5(true)}
+                  id="frame"
+                  alt="your image"
+                  src={item.cityMedias[0].filePath}
+                  name="aboutme"
+                  border="0"
+                  className="image-modal"
+                />
+              }
+            />
+          </div>
+        ) : (
+          ""
+        )}
+      </td>
       <td>
         <button
           type="button"

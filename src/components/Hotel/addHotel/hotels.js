@@ -46,7 +46,7 @@ function Admin(props) {
     let priceError = "";
     let cityError = "";
     if (!room) {
-      roomError = "Room is not blank";
+      roomError = "Hotel Name is not blank";
       setValidRoom(true);
     }
     if (!price) {
