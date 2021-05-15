@@ -20,29 +20,19 @@ import _ from "lodash";
 import { onDetailBeds, onCreateBeds } from "../../../apis/countries";
 import { onUploadImage } from "../../../apis/hotels";
 function Admin(props) {
-  const [detail, setDetail] = useState(null);
   const [bedName, setBedName] = useState(null);
   const [bedError, setBedError] = useState(null);
   const [image, setImage] = useState();
   const [imageId, setImageId] = useState();
   const [validBed, setValidBed] = useState(false);
-  const [getRoom, setGetRoom] = useState(null);
-  const [roomId, setRoomId] = useState(null);
+  const [description, setDescription] = useState();
+
   const [file, setFile] = useState(null);
   const { params } = props.match;
   useEffect(() => {
     onUpdateAvatars();
   }, [image]);
-  const detailBed = async () => {
-    try {
-      var res = await onDetailBeds(params.id);
-      setDetail(res.data);
-      setRoomId(res.data.roomId);
-      setBedName(res.data.bedName);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   function validate() {
     let bedError = "";
     if (!bedName) {
@@ -60,22 +50,23 @@ function Admin(props) {
     setBedName(e.target.value);
     setValidBed(false);
   }
-  function onChangeRoomId(e) {
-    setRoomId(e.target.value);
-  }
+
   async function onChangeImage(e) {
     if (e.target.files && e.target.files[0]) {
       setFile(URL.createObjectURL(e.target.files[0]));
       setImage(e.target.files[0]);
     }
   }
-
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
+  }
   function onSubmit(e) {
     e.preventDefault();
     const isValid = validate();
     const body = {
       countryName: bedName,
       imageId: [imageId],
+      description: description,
     };
     if (isValid) {
       return onCreateBeds(body)
@@ -137,7 +128,16 @@ function Admin(props) {
                 border="0"
                 className="image-upload"
               />
-
+              <FormGroup className="mb-3">
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
+              </FormGroup>
               <Button color="success">Submit</Button>
             </Form>
             <ToastContainer />

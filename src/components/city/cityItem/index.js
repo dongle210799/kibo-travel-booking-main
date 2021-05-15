@@ -9,46 +9,65 @@ import {
   FormGroup,
   Label,
   Input,
+  CustomInput,
 } from "reactstrap";
 import { Switch } from "antd";
 import "antd/dist/antd.css";
 import ModalApp from "../../Modals/modals";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
-import { onDetailNurse, onUpDateNurse } from "../../../apis/city";
+import {
+  onDetailNurse,
+  onShowcountry,
+  onUpDateNurse,
+} from "../../../apis/city";
 import _ from "lodash";
+import { onUploadImage } from "../../../apis/hotels";
 function NurseItem(props) {
   const [nurse, setNurse] = useState();
+  const [imageId, setImageId] = useState();
+  const [countryId, setCountryId] = useState();
+
+  const [getCountry, setGetCountry] = useState();
   const [nurseError, setNurseError] = useState();
   const [validNurse, setValidNurse] = useState();
+  const [countryError, setCountryError] = useState();
+  const [validCountry, setValidCountry] = useState(false);
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState();
   const [modals, setModals] = useState(false);
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
   const [modals5, setModals5] = useState(false);
   const [idNurse, setIdNurse] = useState(null);
-  var {
-    item,
-    index,
-    currentPage,
-    pageSize,
-    onChangeStatus,
-    onDelete,
-    onEdit2,
-  } = props;
+  var { item, index, currentPage, pageSize, onDelete, onEdit2 } = props;
   useEffect(() => {
     detailNurse();
+    GetCity();
   }, [idNurse]);
-  const detailNurse = async () => {
+  useEffect(() => {
+    onUpdateAvatars();
+  }, [image]);
+  const GetCity = async () => {
     try {
-      var res = await onDetailNurse(idNurse);
-      setNurse(res.data.nurseName);
+      var country = await onShowcountry();
+      setGetCountry(country.data.items);
     } catch (error) {
       console.log(error);
     }
   };
-  function onToggleModals(e) {
-    setModals(!modals);
-  }
+  const detailNurse = async () => {
+    try {
+      var res = await onDetailNurse(idNurse);
+      setNurse(res.data.cityName);
+      setCountryId(res.data.__countries__.id);
+      setImageId(res.data.cityMedias[0].id);
+      setImage(res.data.cityMedias[0].filePath);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   function onToggleModalsDelete(e) {
     setModals2(!modals2);
   }
@@ -58,12 +77,19 @@ function NurseItem(props) {
   }
   function validate() {
     let nurseError = "";
+    let countryError = "";
+
     if (!nurse) {
-      nurseError = "Nurse is not blank";
+      nurseError = "City Name is not blank";
       setValidNurse(true);
     }
-    if (nurseError) {
+    if (!countryId) {
+      countryError = "Country is not blank";
+      setValidCountry(true);
+    }
+    if (nurseError || countryError) {
       setNurseError(nurseError);
+      setCountryError(countryError);
       return false;
     }
     return true;
@@ -72,12 +98,23 @@ function NurseItem(props) {
     setNurse(e.target.value);
     setValidNurse(false);
   }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
+  function onChangeCountryId(e) {
+    setCountryId(e.target.value);
+    setValidCountry(false);
+  }
   function onEdit(e) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      nurseName: nurse,
-      status: true,
+      cityName: nurse,
+      imageId: [imageId],
+      countryId: countryId,
     };
     if (isValid) {
       return onUpDateNurse(idNurse, body)
@@ -90,18 +127,28 @@ function NurseItem(props) {
         })
         .catch((err) => {
           console.log(err.response);
-          err.response.data.message.map((message) => {
-            notifytoast("error", message);
-          });
+          notifytoast("error", "City name is already existed");
         });
     }
   }
-  // const patients = item.patients;
-  // var listPatients = Array.isArray(patients)
-  //   ? patients.map((option, i) => {
-  //       return option.patientName;
-  //     })
-  //   : "";
+  function onUpdateAvatars(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+      })
+      .catch((err) => {});
+  }
+  var elmCountry = Array.isArray(getCountry)
+    ? getCountry.map((option, i) => {
+        return (
+          <option key={i} value={option.id}>
+            {option.countryName}
+          </option>
+        );
+      })
+    : "";
 
   return (
     <tr key={index}>
@@ -140,6 +187,7 @@ function NurseItem(props) {
           ""
         )}
       </td>
+      <td>{item.description}</td>
       <td>
         <button
           type="button"
@@ -151,18 +199,57 @@ function NurseItem(props) {
         <ModalApp
           modal={modals3}
           children={
-            <FormGroup className="mb-3">
-              <Label for="Email">Nurse Name</Label>
-              <Input
-                type="text"
-                placeholder="Nurse Name"
-                autoComplete="nursename"
-                value={nurse}
-                maxlength="30"
-                onChange={onChangeNurseName}
-                invalid={validNurse}
+            <FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">City Name</Label>
+                <Input
+                  type="text"
+                  placeholder="City Name"
+                  autoComplete="roomname"
+                  value={nurse}
+                  maxlength="30"
+                  onChange={onChangeNurseName}
+                  invalid={validNurse}
+                />
+                {nurseError ? <FormFeedback>{nurseError}</FormFeedback> : null}
+              </FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">Image</Label>
+                <CustomInput
+                  type="file"
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file ? file : image}
+                name="aboutme"
+                border="0"
+                className="image-upload"
               />
-              {nurseError ? <FormFeedback>{nurseError}</FormFeedback> : null}
+              <FormGroup>
+                <Label>Country</Label>
+                <CustomInput
+                  name="select"
+                  id="select"
+                  type="select"
+                  onChange={onChangeCountryId}
+                  value={countryId}
+                  invalid={validCountry}
+                  required
+                >
+                  <option selected>choose a Country</option>
+
+                  {elmCountry}
+                </CustomInput>
+                {countryError ? (
+                  <FormFeedback>{countryError}</FormFeedback>
+                ) : null}
+              </FormGroup>
             </FormGroup>
           }
           onSubmit={onEdit}

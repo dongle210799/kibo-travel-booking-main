@@ -7,10 +7,10 @@ export const onShowlistNurse = (page, pageSize, search) => {
   return callAPI(`api/v1/cities`, "GET");
 };
 export const onDetailNurse = (id) => {
-  return callAPI(`nurses/detail/${id}`, "GET");
+  return callAPI(`api/v1/cities/${id}`, "GET");
 };
 export const onUpDateNurse = (id, body) => {
-  return callAPI(`nurses/update/${id}`, "PUT", body);
+  return callAPI(`api/v1/cities/updateCity/${id}`, "PUT", body);
 };
 export const onUpDateStatus = (id) => {
   return callAPI(`nurses/${id}/status`, "PATCH");

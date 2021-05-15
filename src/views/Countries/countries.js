@@ -152,6 +152,7 @@ function Bed() {
                   <th>No.</th>
                   <th>Country Name</th>
                   <th>Image</th>
+                  <th>Description</th>
                   <th>Action</th>
                 </tr>
               </thead>

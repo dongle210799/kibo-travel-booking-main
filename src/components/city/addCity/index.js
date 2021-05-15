@@ -25,10 +25,10 @@ import {
 } from "../../../apis/city";
 import { onUploadImage } from "../../../apis/hotels";
 function Admin(props) {
-  const [detail, setDetail] = useState();
   const [nurse, setNurse] = useState();
   const [imageId, setImageId] = useState();
   const [countryId, setCountryId] = useState();
+
   const [getCountry, setGetCountry] = useState();
   const [nurseError, setNurseError] = useState();
   const [validNurse, setValidNurse] = useState();
@@ -74,6 +74,7 @@ function Admin(props) {
     setNurse(e.target.value);
     setValidNurse(false);
   }
+
   function onChangeCountryId(e) {
     setCountryId(e.target.value);
     setValidCountry(false);
@@ -181,6 +182,7 @@ function Admin(props) {
                   <FormFeedback>{countryError}</FormFeedback>
                 ) : null}
               </FormGroup>
+
               <Button color="success">Submit</Button>
             </Form>
             <ToastContainer />

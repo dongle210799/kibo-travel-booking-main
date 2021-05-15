@@ -10,6 +10,7 @@ import {
   Label,
   Input,
   FormFeedback,
+  CustomInput,
 } from "reactstrap";
 import { Switch } from "antd";
 import "antd/dist/antd.css";
@@ -29,11 +30,10 @@ function BedItem(props) {
   const [bedName, setBedName] = useState(null);
   const [bedError, setBedError] = useState(null);
   const [validBed, setValidBed] = useState(false);
-  const [getRoom, setGetRoom] = useState(null);
   const [image, setImage] = useState();
+  const [description, setDescription] = useState();
   const [imageId, setImageId] = useState();
-  const [roomId, setRoomId] = useState(null);
-  const [modals, setModals] = useState(false);
+
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
   const [modals5, setModals5] = useState(false);
@@ -51,7 +51,6 @@ function BedItem(props) {
   } = props;
   useEffect(() => {
     detailBed();
-    GetRoom();
   }, [idBed]);
   useEffect(() => {
     onUpdateImage();
@@ -60,6 +59,9 @@ function BedItem(props) {
     try {
       var res = await onDetailBeds(idBed);
       setBedName(res.data.countryName);
+      setDescription(res.data.description);
+      setImage(res.data.countryMedias[0].filePath);
+      setImageId(res.data.countryMedias[0].id);
     } catch (error) {
       console.log(error);
     }
@@ -76,14 +78,7 @@ function BedItem(props) {
     }
     return true;
   }
-  const GetRoom = async () => {
-    try {
-      var room = await onShowRoom();
-      setGetRoom(room.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   function onToggleModalsEdit(id) {
     setIdBed(id);
     setModals3(!modals3);
@@ -92,9 +87,6 @@ function BedItem(props) {
     setBedName(e.target.value);
     setValidBed(false);
   }
-  function onChangeRoomId(e) {
-    setRoomId(e.target.value);
-  }
   async function onChangeImage(e) {
     if (e.target.files && e.target.files[0]) {
       setFile(URL.createObjectURL(e.target.files[0]));
@@ -102,8 +94,8 @@ function BedItem(props) {
     }
   }
 
-  function onToggleModals(e) {
-    setModals(!modals);
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
   }
   function onToggleModalsDelete(e) {
     setModals2(!modals2);
@@ -177,6 +169,7 @@ function BedItem(props) {
           ""
         )}
       </td>
+      <td>{item.description}</td>
       <td>
         <button
           type="button"
@@ -202,13 +195,32 @@ function BedItem(props) {
               </FormGroup>
 
               <FormGroup className="mb-3">
-                <Label>Image</Label>
-                <Input
+                <Label for="Email">Image</Label>
+                <CustomInput
                   type="file"
-                  name="select"
-                  onChange={onChangeRoomId}
-                  value={roomId}
-                ></Input>
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file ? file : image}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
+              <FormGroup className="mb-3">
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
               </FormGroup>
             </Form>
           }

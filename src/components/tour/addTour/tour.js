@@ -221,9 +221,6 @@ function Patient(props) {
                   onChange={onChangeDescription}
                   // invalid={validPatient}
                 />
-                {patientError ? (
-                  <FormFeedback>{patientError}</FormFeedback>
-                ) : null}
               </FormGroup>
 
               <Button color="success">Submit</Button>

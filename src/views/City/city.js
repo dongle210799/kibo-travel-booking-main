@@ -155,6 +155,7 @@ function Admin() {
                   <th>City Name</th>
                   <th>Country Name</th>
                   <th>image</th>
+                  <th>description</th>
                   <th>Action</th>
                 </tr>
               </thead>

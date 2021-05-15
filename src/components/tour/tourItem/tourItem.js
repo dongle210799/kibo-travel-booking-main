@@ -139,9 +139,7 @@ function PatientItem(props) {
       setImage(e.target.files[0]);
     }
   }
-  function onToggleModals(e) {
-    setModals(!modals);
-  }
+
   function onToggleModalsDelete(e) {
     setModals2(!modals2);
   }
