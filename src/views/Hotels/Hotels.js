@@ -157,6 +157,7 @@ function Room() {
                   <th>Image</th>
                   <th>rate</th>
                   <th>Country</th>
+                  <th>Description</th>
                   <th>Action</th>
                 </tr>
               </thead>

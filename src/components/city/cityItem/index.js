@@ -253,7 +253,7 @@ function NurseItem(props) {
             </FormGroup>
           }
           onSubmit={onEdit}
-          title={"Nurse Detail"}
+          title={"City Detail"}
           toggleModal={onToggleModalsEdit}
           showModalFooter={onToggleModalsEdit}
         />

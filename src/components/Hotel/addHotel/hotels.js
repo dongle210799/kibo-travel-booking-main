@@ -33,6 +33,8 @@ function Admin(props) {
   const [validPrice, setValidPrice] = useState(false);
   const [cityError, setCityError] = useState();
   const [validCity, setValidCity] = useState(false);
+  const [description, setDescription] = useState();
+
   const [file, setFile] = useState(null);
   const { params } = props.match;
   useEffect(() => {
@@ -68,6 +70,9 @@ function Admin(props) {
   function onChangeRoomName(e) {
     setRoom(e.target.value);
     setValidRoom(false);
+  }
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
   }
   function onChangePrice(e) {
     setPrice(e.target.value);
@@ -109,13 +114,14 @@ function Admin(props) {
       price: price,
       imageId: [`${imageId}`],
       cityId: cityId,
+      description: description,
     };
     if (isValid) {
       return onCreateRoom(body)
         .then((res) => {
           notifytoast("success", "Created successfully");
           setTimeout(() => {
-            props.history.push(`/admin/tours`);
+            props.history.push(`/admin/hotels`);
           }, 1000);
         })
         .catch((err) => {
@@ -153,7 +159,7 @@ function Admin(props) {
               <FormGroup className="mb-3">
                 <Label for="Email">Price</Label>
                 <Input
-                  type="text"
+                  type="number"
                   placeholder="Price"
                   // autoComplete="roomname"
                   value={price}
@@ -196,6 +202,16 @@ function Admin(props) {
                   {elmCity}
                 </CustomInput>
                 {cityError ? <FormFeedback>{cityError}</FormFeedback> : null}
+              </FormGroup>
+              <FormGroup className="mb-3">
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
               </FormGroup>
               <Button color="success">Submit</Button>
             </Form>

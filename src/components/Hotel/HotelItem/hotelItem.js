@@ -31,6 +31,7 @@ function RoomItem(props) {
   const [image, setImage] = useState();
   const [imageId, setImageId] = useState();
   const [getCity, setGetCity] = useState();
+  const [description, setDescription] = useState();
   const [roomError, setRoomError] = useState();
   const [validRoom, setValidRoom] = useState(false);
   const [priceError, setPriceError] = useState();
@@ -70,6 +71,7 @@ function RoomItem(props) {
       setImage(res.data.areaMedias[0].filePath);
       setImageId(res.data.areaMedias[0].id);
       setCity(res.data.__cities__.cityName);
+      setDescription(res.data.description);
     } catch (error) {
       console.log(error);
     }
@@ -118,6 +120,9 @@ function RoomItem(props) {
     setRoom(e.target.value);
     setValidRoom(false);
   }
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
+  }
   function onChangePrice(e) {
     setPrice(e.target.value);
     setValidRoom(false);
@@ -140,6 +145,7 @@ function RoomItem(props) {
       price: price,
       imageId: [imageId],
       cityId: cityId,
+      description: description,
     };
     if (isValid) {
       return onUpDateRoom(item.id, body)
@@ -215,6 +221,7 @@ function RoomItem(props) {
       </td>
       <td>{item.rates}</td>
       <td>{item.__cities__.__countries__.countryName}</td>
+      <td>{item.description}</td>
       <td>
         <button
           type="button"
@@ -289,6 +296,16 @@ function RoomItem(props) {
                   {elmCity}
                 </CustomInput>
                 {cityError ? <FormFeedback>{cityError}</FormFeedback> : null}
+              </FormGroup>
+              <FormGroup className="mb-3">
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
               </FormGroup>
             </FormGroup>
           }
