@@ -138,7 +138,7 @@ function Admin() {
       {loading ? <Loading /> : ""}
       <div className="animated fadeIn">
         <Row>
-          <Col xs="9" lg="4">
+          {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
                 placeholder="User name..."
@@ -152,7 +152,7 @@ function Admin() {
                 ></Button>
               </InputGroupAddon>
             </InputGroup>
-          </Col>
+          </Col> */}
           <Col xs="3" lg="3">
             <Link
               to="/admin/users/create-user"
@@ -170,7 +170,6 @@ function Admin() {
                   <th>User Name</th>
                   <th>Role</th>
                   <th>Created Time</th>
-                  <th>Active</th>
                   <th>Action</th>
                 </tr>
               </thead>

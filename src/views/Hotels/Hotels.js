@@ -122,7 +122,7 @@ function Room() {
       {loading ? <Loading /> : ""}
       <div className="animated fadeIn">
         <Row>
-          <Col xs="9" lg="4">
+          {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
                 placeholder="Room name..."
@@ -136,7 +136,7 @@ function Room() {
                 ></Button>
               </InputGroupAddon>
             </InputGroup>
-          </Col>
+          </Col> */}
           <Col xs="3" lg="3">
             <Link
               to="/admin/rooms/create-room"

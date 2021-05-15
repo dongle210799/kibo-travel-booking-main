@@ -184,7 +184,7 @@ function NurseItem(props) {
           ></ModalHeader>
           <ModalBody>
             <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to delete this nurse?
+              Do you want to delete this city?
             </p>
           </ModalBody>
           <ModalFooter className="modals-footer">

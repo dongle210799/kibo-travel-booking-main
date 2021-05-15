@@ -178,36 +178,7 @@ function UserItem(props) {
 
       <td>{item.roles}</td>
       <td>{formatDate(item.createdAt)}</td>
-      <td>
-        <Switch checked={item.status} onChange={onToggleModals}></Switch>
-        <Modal isOpen={modals} className="modals modal-dialog-centered">
-          <ModalHeader
-            toggle={onToggleModals}
-            className="modals-header"
-          ></ModalHeader>
-          <ModalBody>
-            <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to {item.status ? "inactivate" : "activate"} this
-              user?
-            </p>
-          </ModalBody>
-          <ModalFooter className="modals-footer">
-            <Button
-              color="primary"
-              onClick={() => {
-                onToggleModals();
-                onChangeStatus(item);
-              }}
-            >
-              Submit
-            </Button>{" "}
-            &nbsp;
-            <Button color="danger" onClick={onToggleModals}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </td>
+
       <td>
         <button
           type="button"

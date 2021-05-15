@@ -112,7 +112,6 @@ function Admin(props) {
     return onUploadImage(formData)
       .then((res) => {
         setImageId(res.data[0].id);
-        console.log(res.data[0].id);
       })
       .catch((err) => {});
   }

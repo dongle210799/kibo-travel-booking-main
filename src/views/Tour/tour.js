@@ -5,7 +5,7 @@ import {
   onShowListPatient,
   onUpDateStatus,
   onDeletePatient,
-} from "../../apis/patients";
+} from "../../apis/tour";
 import { ToastContainer } from "react-toastify";
 import Loading from "../../components/loading/loading";
 import { notifytoast } from "../../helper/index";
@@ -63,9 +63,9 @@ function Patients(props) {
       const result = await onShowListPatient(currentPage, pageSize, textSearch);
       console.log(result);
       const { data } = result;
-      setListPatient(data.data);
-      setTotalCout(data.pagitation.totalCount);
-      setTotalPage(data.pagitation.totalPage);
+      setListPatient(data.items);
+      setTotalCout(data.meta.totalItems);
+      setTotalPage(data.meta.totalPages);
       if (currentPage !== 1 && data.data.length === 0) {
         setCurrentPage(currentPage - 1);
       }
@@ -123,7 +123,7 @@ function Patients(props) {
       {loading ? <Loading /> : ""}
       <div className="animated fadeIn">
         <Row>
-          <Col xs="9" lg="4">
+          {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
                 placeholder="Patient Name..."
@@ -137,13 +137,13 @@ function Patients(props) {
                 ></Button>
               </InputGroupAddon>
             </InputGroup>
-          </Col>
+          </Col> */}
           <Col xs="3" lg="3">
             <Link
               to="/admin/patients/create-patient"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create patient
+              <span className="fa fa-plus mr5"></span>Create Tour
             </Link>
           </Col>
           <Col xs="12" lg="12">
@@ -151,11 +151,12 @@ function Patients(props) {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Patient Name</th>
-                  <th>Chart Number</th>
-                  <th>Bed Number</th>
-                  <th>Nurse Name</th>
-                  <th>Active</th>
+                  <th>Tour Name</th>
+                  <th>Price</th>
+                  <th>City</th>
+                  <th>Created At</th>
+                  <th>Country</th>
+                  <th>Description</th>
                   <th>Action</th>
                 </tr>
               </thead>

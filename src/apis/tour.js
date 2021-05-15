@@ -4,23 +4,20 @@ export const onShowListPatient = (page, pageSize, search) => {
   return callAPI(`api/v1/tourist-areas`, "GET");
 };
 export const onCreatePatient = (body) => {
-  return callAPI("patients", "POST", body);
+  return callAPI("api/v1/tourist-areas", "POST", body);
 };
 export const onDetailPatient = (id) => {
-  return callAPI(`patients/detail/${id}`, "GET");
+  return callAPI(`api/v1/tourist-areas/${id}`, "GET");
 };
 export const onUpDatePatient = (id, body) => {
-  return callAPI(`patients/update/${id}`, "PUT", body);
+  return callAPI(`api/v1/tourist-areas/updateArea/${id}`, "PUT", body);
 };
 export const onUpDateStatus = (id) => {
   return callAPI(`patients/${id}/status`, "PATCH");
 };
 export const onDeletePatient = (id) => {
-  return callAPI(`patients/${id}`, "DELETE");
+  return callAPI(`api/v1/tourist-areas/deleteArea/${id}`, "DELETE");
 };
-export const onShowBed = () => {
-  return callAPI(`beds/empty-bed?page_size=1000`, "GET");
-};
-export const onShowNurse = () => {
-  return callAPI(`nurses?status=true&isJoin=false&page_size=1000`, "GET");
+export const onShowcity = () => {
+  return callAPI(`api/v1/cities`, "GET");
 };

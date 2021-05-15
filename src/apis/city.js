@@ -16,7 +16,7 @@ export const onUpDateStatus = (id) => {
   return callAPI(`nurses/${id}/status`, "PATCH");
 };
 export const onDeleteNurse = (id) => {
-  return callAPI(`nurses/${id}`, "DELETE");
+  return callAPI(`api/v1/cities/deleteCountry/${id}`, "DELETE");
 };
 export const onShowcountry = () => {
   return callAPI(`api/v1/countries`, "GET");

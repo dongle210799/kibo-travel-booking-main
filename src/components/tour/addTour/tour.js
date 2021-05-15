@@ -17,133 +17,110 @@ import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 
 import _ from "lodash";
-import {
-  onDetailPatient,
-  onCreatePatient,
-  onUpDatePatient,
-  onShowBed,
-  onShowNurse,
-  onUpDateStatus,
-} from "../../../apis/patients";
+import { onCreatePatient, onShowcity } from "../../../apis/tour";
+import { onUploadImage } from "../../../apis/hotels";
 function Patient(props) {
-  const [detail, setDetail] = useState();
   const [patient, setPatient] = useState();
   const [chart, setChart] = useState();
-  const [getBed, setGetBed] = useState();
-  const [bed, setBed] = useState();
-  const [bedId, setBedId] = useState();
-  const [getNurse, setGetNurse] = useState();
-  const [nurseId, setNurseId] = useState();
+  const [getCity, setGetCity] = useState();
+  const [city, setCity] = useState();
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
+  const [cityId, setCityId] = useState();
+  const [description, setDescription] = useState();
   const [patientError, setPatientError] = useState();
   const [chartNumberError, setChartNumberError] = useState();
-  const [bedError, setBedError] = useState();
-  const [nurseError, setNurseError] = useState();
+  const [cityError, setCityError] = useState();
   const [validPatient, setValidPatient] = useState(false);
   const [validChart, setValidChart] = useState(false);
-  const [validBed, setValidBed] = useState(false);
-  const [validNurse, setValidNurse] = useState(false);
+  const [validCity, setValidCity] = useState(false);
   const { params } = props.match;
   useEffect(() => {
-    if (_.isEmpty(params)) {
-      GetBed();
-      GetNurse();
-    } else {
-      detailPatient();
-      GetBed();
-      GetNurse();
-    }
+    GetCity();
   }, []);
-  const detailPatient = async () => {
-    try {
-      var res = await onDetailPatient(params.id);
-      setDetail(res.data);
-      setChart(res.data.chartNumber);
-      setBedId(res.data.bedId);
-      setNurseId(res.data.nurseId);
-      setPatient(res.data.patientName);
-      setBed(res.data.bed.bedName);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    onUpdateAvatars();
+  }, [image]);
   function validate() {
     let patientError = "";
-    let bedError = "";
-    let nurseError = "";
+    let cityError = "";
+
     if (!patient) {
-      patientError = "Patient is not blank";
+      patientError = "Tour Name is not blank";
       setValidPatient(true);
     }
-    if (!bedId) {
-      bedError = "Bed is not blank";
-      setValidBed(true);
+    if (!cityId) {
+      cityError = "City is not blank";
+      setValidCity(true);
     }
-    if (!nurseId) {
-      nurseError = "Nurse is not blank";
-      setValidNurse(true);
-    }
-    if (patientError || bedError || nurseError) {
+
+    if (patientError || cityError) {
       setPatientError(patientError);
-      setBedError(bedError);
-      setNurseError(nurseError);
+      setCityError(cityError);
       return false;
     }
     return true;
   }
-  const GetBed = async () => {
+  const GetCity = async () => {
     try {
-      var bed = await onShowBed();
-      setGetBed(bed.data.data);
+      var city = await onShowcity();
+      setGetCity(city.data.items);
     } catch (error) {
       console.log(error);
     }
   };
-  const GetNurse = async () => {
-    try {
-      var nurse = await onShowNurse();
-      setGetNurse(nurse.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   function onChangePatientName(e) {
     setPatient(e.target.value);
     setValidPatient(false);
   }
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
+  }
   function onChangeChartNumber(e) {
-    if (e.target.value.length == 30) {
-      return false;
-    }
     (e.keyCode === 69 || e.keyCode === 190) && e.preventDefault();
     (e.key === "e" || e.key === "," || e.key === "-" || e.key === "+") &&
       e.preventDefault();
     setChart(e.target.value);
     setValidChart(false);
   }
-  function onChangeBedId(e) {
-    setBedId(e.target.value);
-    setValidBed(false);
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
   }
-  function onChangeNurseId(e) {
-    setNurseId(e.target.value);
-    setValidNurse(false);
+  function onChangeCityId(e) {
+    setCityId(e.target.value);
+    setValidCity(false);
   }
-
+  function onUpdateAvatars(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+        console.log(res.data[0].id);
+      })
+      .catch((err) => {});
+  }
   function onSubmit(e) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      patientName: patient,
-      chartNumber: chart,
-      bedId: bedId,
-      nurseId: nurseId,
+      areaName: patient,
+      price: chart,
+      description: description,
+      cityId: cityId,
+      imageId: [`${imageId}`],
     };
     if (isValid) {
       return onCreatePatient(body)
         .then((res) => {
           notifytoast("success", "Created successfully");
           setTimeout(() => {
-            props.history.push("/admin/patients");
+            props.history.push("/admin/tours");
           }, 1000);
         })
         .catch((err) => {
@@ -153,45 +130,11 @@ function Patient(props) {
     }
   }
 
-  function onDetail(e) {
-    e.preventDefault();
-    const isValid = validate();
-    const body = {
-      patientName: patient,
-      chartNumber: chart,
-      bedId: bedId,
-      nurseId: nurseId,
-      status: true,
-    };
-    if (isValid) {
-      return onUpDatePatient(params.id, body)
-        .then((res) => {
-          onUpDateStatus(params.id);
-          notifytoast("success", "Saved successfully");
-          setTimeout(() => {
-            props.history.push("/admin/patients");
-          }, 1000);
-        })
-        .catch((err) => {
-          console.log(err.response);
-          notifytoast("error", err.response.data.message);
-        });
-    }
-  }
-  var elmBed = Array.isArray(getBed)
-    ? getBed.map((option, i) => {
+  var elmBed = Array.isArray(getCity)
+    ? getCity.map((option, i) => {
         return (
           <option key={i} value={option.id}>
-            {option.bedName}
-          </option>
-        );
-      })
-    : "";
-  var elmNurse = Array.isArray(getNurse)
-    ? getNurse.map((option, i) => {
-        return (
-          <option key={i} value={option.id}>
-            {option.nurseName}
+            {option.cityName}
           </option>
         );
       })
@@ -201,13 +144,13 @@ function Patient(props) {
       <Col xl="6" md="6" xs="12" className="mx-auto">
         <Card className="mx-4">
           <CardBody className="p-8">
-            <Form onSubmit={params.id ? onDetail : onSubmit}>
+            <Form onSubmit={onSubmit}>
               <h1>{params.id ? "Patient Detail" : "Create Patient"}</h1>
               <FormGroup className="mb-3">
-                <Label>Patient Name</Label>
+                <Label>Tour Name</Label>
                 <Input
                   type="text"
-                  placeholder="Patient Name"
+                  placeholder="Tour Name"
                   autoComplete="patientname"
                   value={patient}
                   maxLength="50"
@@ -218,8 +161,9 @@ function Patient(props) {
                   <FormFeedback>{patientError}</FormFeedback>
                 ) : null}
               </FormGroup>
+
               <FormGroup className="mb-3">
-                <Label>Chart Number</Label>
+                <Label>Price</Label>
                 <Input
                   type="number"
                   onKeyDown={onChangeChartNumber}
@@ -233,41 +177,55 @@ function Patient(props) {
                   <FormFeedback>{chartNumberError}</FormFeedback>
                 ) : null}
               </FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">Image</Label>
+                <CustomInput
+                  type="file"
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
               <FormGroup>
-                <Label>Bed Number</Label>
+                <Label>City</Label>
                 <CustomInput
                   name="select"
                   id="select"
                   type="select"
-                  onChange={onChangeBedId}
-                  value={bedId}
-                  invalid={validBed}
+                  onChange={onChangeCityId}
+                  value={cityId}
+                  invalid={validCity}
                   required
                 >
-                  {bed ? (
-                    <option selected>{detail.bed.bedName}</option>
-                  ) : (
-                    <option selected>choose a Bed</option>
-                  )}
+                  <option selected>choose a City</option>
+
                   {elmBed}
                 </CustomInput>
-                {bedError ? <FormFeedback>{bedError}</FormFeedback> : null}
+                {cityError ? <FormFeedback>{cityError}</FormFeedback> : null}
+              </FormGroup>
+              <FormGroup className="mb-3">
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
+                {patientError ? (
+                  <FormFeedback>{patientError}</FormFeedback>
+                ) : null}
               </FormGroup>
 
-              <FormGroup className="mb-3">
-                <Label>Nurse Name</Label>
-                <CustomInput
-                  type="select"
-                  name="select"
-                  onChange={onChangeNurseId}
-                  value={nurseId}
-                  invalid={validNurse}
-                >
-                  <option selected>choose a Nurse</option>
-                  {elmNurse}
-                </CustomInput>
-                {nurseError ? <FormFeedback>{nurseError}</FormFeedback> : null}
-              </FormGroup>
               <Button color="success">Submit</Button>
             </Form>
             <ToastContainer />

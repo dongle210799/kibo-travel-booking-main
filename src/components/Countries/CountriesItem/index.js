@@ -19,17 +19,27 @@ import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 import ModalApp from "../../Modals/modals";
 import _ from "lodash";
-import { onDetailBeds, onUpDateBeds, onShowRoom } from "../../../apis/beds";
+import {
+  onDetailBeds,
+  onUpDateBeds,
+  onShowRoom,
+} from "../../../apis/countries";
+import { onUploadImage } from "../../../apis/hotels";
 function BedItem(props) {
   const [bedName, setBedName] = useState(null);
   const [bedError, setBedError] = useState(null);
   const [validBed, setValidBed] = useState(false);
   const [getRoom, setGetRoom] = useState(null);
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
   const [roomId, setRoomId] = useState(null);
   const [modals, setModals] = useState(false);
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
+  const [modals5, setModals5] = useState(false);
   const [idBed, setIdBed] = useState(null);
+  const [file, setFile] = useState(null);
+
   var {
     item,
     index,
@@ -43,6 +53,9 @@ function BedItem(props) {
     detailBed();
     GetRoom();
   }, [idBed]);
+  useEffect(() => {
+    onUpdateImage();
+  }, [file]);
   const detailBed = async () => {
     try {
       var res = await onDetailBeds(idBed);
@@ -82,6 +95,12 @@ function BedItem(props) {
   function onChangeRoomId(e) {
     setRoomId(e.target.value);
   }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
 
   function onToggleModals(e) {
     setModals(!modals);
@@ -111,20 +130,53 @@ function BedItem(props) {
         });
     }
   }
-  var elOption = Array.isArray(getRoom)
-    ? getRoom.map((option, i) => {
-        return (
-          <option key={i} value={option.id}>
-            {option.roomName}
-          </option>
-        );
+  function onUpdateImage(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
       })
-    : "";
+      .catch((err) => {});
+  }
+
   return (
     <tr key={index}>
       <td>{index + 1 + (currentPage - 1) * pageSize}</td>
       <td>{item.countryName}</td>
-      <td>{item.room ? item.room.roomName : ""}</td>
+      <td>
+        {" "}
+        {item.countryMedias[0] ? (
+          <div>
+            <img
+              onClick={() => setModals5(true)}
+              id="frame"
+              alt="your image"
+              src={item.countryMedias[0].filePath}
+              name="aboutme"
+              border="0"
+              className="image-table"
+            />
+            <ModalApp
+              modal={modals5}
+              toggleModal={() => setModals5(false)}
+              children={
+                <img
+                  onClick={() => setModals5(true)}
+                  id="frame"
+                  alt="your image"
+                  src={item.countryMedias[0].filePath}
+                  name="aboutme"
+                  border="0"
+                  className="image-modal"
+                />
+              }
+            />
+          </div>
+        ) : (
+          ""
+        )}
+      </td>
       <td>
         <button
           type="button"
@@ -179,7 +231,7 @@ function BedItem(props) {
           ></ModalHeader>
           <ModalBody>
             <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to delete this bed?
+              Do you want to delete this country?
             </p>
           </ModalBody>
           <ModalFooter className="modals-footer">

@@ -16,13 +16,20 @@ import "antd/dist/antd.css";
 import ModalApp from "../../Modals/modals";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
-import { onDetailRoom, onUpDateRoom, onShowcity } from "../../../apis/hotels";
+import {
+  onDetailRoom,
+  onUpDateRoom,
+  onShowcity,
+  onUploadImage,
+} from "../../../apis/hotels";
 import _ from "lodash";
 function RoomItem(props) {
   const [room, setRoom] = useState();
   const [price, setPrice] = useState();
   const [cityId, setCityId] = useState();
   const [city, setCity] = useState();
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
   const [getCity, setGetCity] = useState();
   const [roomError, setRoomError] = useState();
   const [validRoom, setValidRoom] = useState(false);
@@ -35,6 +42,7 @@ function RoomItem(props) {
   const [modals3, setModals3] = useState(false);
   const [modals5, setModals5] = useState(false);
   const [idRoom, setIdRoom] = useState(null);
+  const [file, setFile] = useState(null);
 
   var {
     item,
@@ -50,19 +58,23 @@ function RoomItem(props) {
     detailRoom();
     GetCity();
   }, [idRoom]);
+  useEffect(() => {
+    onUpdateImage();
+  }, [file]);
   const detailRoom = async () => {
     try {
       var res = await onDetailRoom(idRoom);
       setRoom(res.data.hotelName);
       setPrice(res.data.price);
       setCityId(res.data.__cities__.id);
+      setImage(res.data.areaMedias[0].filePath);
+      setImageId(res.data.areaMedias[0].id);
+      setCity(res.data.__cities__.cityName);
     } catch (error) {
       console.log(error);
     }
   };
-  function onToggleModals(e) {
-    setModals(!modals);
-  }
+
   function onToggleModalsDelete(e) {
     setModals2(!modals2);
   }
@@ -110,6 +122,12 @@ function RoomItem(props) {
     setPrice(e.target.value);
     setValidRoom(false);
   }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
   function onChangeCityId(e) {
     setCityId(e.target.value);
     setValidCity(false);
@@ -120,7 +138,7 @@ function RoomItem(props) {
     const body = {
       hotelName: room,
       price: price,
-      imageId: ["string"],
+      imageId: [imageId],
       cityId: cityId,
     };
     if (isValid) {
@@ -137,6 +155,15 @@ function RoomItem(props) {
           notifytoast("error", err.response.data.message);
         });
     }
+  }
+  function onUpdateImage(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+      })
+      .catch((err) => {});
   }
   var elmCity = Array.isArray(getCity)
     ? getCity.map((option, i) => {
@@ -201,10 +228,10 @@ function RoomItem(props) {
           children={
             <FormGroup>
               <FormGroup className="mb-3">
-                <Label for="Email">Room Name</Label>
+                <Label for="Email">Hotel Name</Label>
                 <Input
                   type="text"
-                  placeholder="Room Name"
+                  placeholder="Hotel Name"
                   autoComplete="roomname"
                   value={room}
                   onChange={onChangeRoomName}
@@ -224,6 +251,24 @@ function RoomItem(props) {
                 />
                 {priceError ? <FormFeedback>{priceError}</FormFeedback> : null}
               </FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">Image</Label>
+                <CustomInput
+                  type="file"
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file ? file : image}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
               <FormGroup>
                 <Label>City</Label>
                 <CustomInput
@@ -235,7 +280,11 @@ function RoomItem(props) {
                   invalid={validCity}
                   required
                 >
-                  <option selected>choose a Bed</option>
+                  {city ? (
+                    <option value={cityId}>{city}</option>
+                  ) : (
+                    <option selected>choose a City</option>
+                  )}
 
                   {elmCity}
                 </CustomInput>
@@ -262,7 +311,7 @@ function RoomItem(props) {
           ></ModalHeader>
           <ModalBody>
             <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to delete this room?
+              Do you want to delete this hotel?
             </p>
           </ModalBody>
           <ModalFooter className="modals-footer">

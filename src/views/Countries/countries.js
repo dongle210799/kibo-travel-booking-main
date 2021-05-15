@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import BedItem from "../../components/Countries/CountriesItem/bedItem";
-import { onShowBeds, onUpDateStatus, onDeleteBed } from "../../apis/beds";
+import BedItem from "../../components/Countries/CountriesItem";
+import { onShowBeds, onUpDateStatus, onDeleteBed } from "../../apis/countries";
 import Loading from "../../components/loading/loading";
 import PaginationApp from "../../components/Pagination/pagination";
 import { ToastContainer } from "react-toastify";
@@ -121,7 +121,7 @@ function Bed() {
       {loading ? <Loading /> : ""}
       <div className="animated fadeIn">
         <Row>
-          <Col xs="9" lg="4">
+          {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
                 placeholder="Bed number..."
@@ -135,13 +135,13 @@ function Bed() {
                 ></Button>
               </InputGroupAddon>
             </InputGroup>
-          </Col>
+          </Col> */}
           <Col xs="3" lg="3">
             <Link
               to="/admin/beds/create-bed"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create bed
+              <span className="fa fa-plus mr5"></span>Create Country
             </Link>
           </Col>
 

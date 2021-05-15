@@ -22,123 +22,91 @@ import _ from "lodash";
 import ModalApp from "../../Modals/modals";
 import {
   onDetailPatient,
+  onShowcity,
   onUpDatePatient,
-  onShowBed,
-  onShowNurse,
-  onUpDateStatus,
-} from "../../../apis/patients";
+} from "../../../apis/tour";
+import { onUploadImage } from "../../../apis/hotels";
 function PatientItem(props) {
-  const [patient, setPatient] = useState(null);
-  const [chart, setChart] = useState(null);
-  const [getBed, setGetBed] = useState(null);
-  const [status, setStatus] = useState(null);
-  const [bed, setBed] = useState(null);
-  const [bedId, setBedId] = useState(null);
-  const [getNurse, setGetNurse] = useState(null);
-  const [nurseId, setNurseId] = useState(null);
-  const [patientError, setPatientError] = useState(null);
-  const [chartNumberError, setChartNumberError] = useState(null);
-  const [bedError, setBedError] = useState(null);
-  const [nurseError, setNurseError] = useState(null);
+  const [Id, setId] = useState();
+  const [patient, setPatient] = useState();
+  const [chart, setChart] = useState();
+  const [getCity, setGetCity] = useState();
+  const [file, setFile] = useState(null);
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
+  const [cityId, setCityId] = useState();
+  const [city, setCity] = useState();
+  const [description, setDescription] = useState();
+  const [patientError, setPatientError] = useState();
+  const [chartNumberError, setChartNumberError] = useState();
+  const [cityError, setCityError] = useState();
   const [validPatient, setValidPatient] = useState(false);
   const [validChart, setValidChart] = useState(false);
-  const [validBed, setValidBed] = useState(false);
-  const [validNurse, setValidNurse] = useState(false);
+  const [validCity, setValidCity] = useState(false);
   const [modals, setModals] = useState(false);
   const [modals2, setModals2] = useState(false);
   const [modals3, setModals3] = useState(false);
   const [idPatient, setIdPatient] = useState(null);
 
-  var {
-    item,
-    index,
-    currentPage,
-    pageSize,
-    onChangeStatus,
-    onDelete,
-    onEdit2,
-  } = props;
+  var { item, index, currentPage, pageSize, onDelete, onEdit2 } = props;
   useEffect(() => {
     detailPatient();
-    GetBed();
-    GetNurse();
+    GetCity();
   }, [idPatient]);
+  useEffect(() => {
+    onUpdateAvatars();
+  }, [image]);
   const detailPatient = async () => {
     try {
       var res = await onDetailPatient(idPatient);
-      setChart(res.data.chartNumber);
-      setBedId(res.data.bedId);
-      setNurseId(res.data.nurseId);
-      setPatient(res.data.patientName);
-      setBed(res.data.bed.bedName);
-      setStatus(res.data.status);
+      setId(res.data.id);
+      setPatient(res.data.areaName);
+      setChart(res.data.price);
+      setDescription(res.data.description);
+      setCityId(res.data.cityId);
+      setImage(res.data.areaMedias[0].filePath);
+      setCity(res.data.__cities__.cityName);
     } catch (error) {
       console.log(error);
     }
   };
   function validate() {
     let patientError = "";
-    let bedError = "";
-    let nurseError = "";
+    let cityError = "";
+
     if (!patient) {
-      patientError = "Patient is not blank";
+      patientError = "Tour Name is not blank";
       setValidPatient(true);
     }
-    if (!bedId) {
-      bedError = "Bed is not blank";
-      setValidBed(true);
+    if (!cityId) {
+      cityError = "City is not blank";
+      setValidCity(true);
     }
-    if (!nurseId) {
-      nurseError = "Nurse is not blank";
-      setValidNurse(true);
-    }
-    if (patientError || bedError || nurseError) {
+
+    if (patientError || cityError) {
       setPatientError(patientError);
-      setBedError(bedError);
-      setNurseError(nurseError);
+      setCityError(cityError);
       return false;
     }
     return true;
   }
-  const GetBed = async () => {
+  const GetCity = async () => {
     try {
-      var bed = await onShowBed();
-      setGetBed(bed.data.data);
+      var bed = await onShowcity();
+      setGetCity(bed.data.items);
     } catch (error) {
       console.log(error);
     }
   };
-  const GetNurse = async () => {
-    try {
-      var nurse = await onShowNurse();
-      setGetNurse(nurse.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  function validate() {
-    let patientError = "";
-    let bedError = "";
-    let nurseError = "";
-    if (!patient) {
-      patientError = "Patient is not blank";
-      setValidPatient(true);
-    }
-    if (!bedId) {
-      bedError = "Bed is not blank";
-      setValidBed(true);
-    }
-    if (!nurseId) {
-      nurseError = "Nurse is not blank";
-      setValidNurse(true);
-    }
-    if (patientError || bedError || nurseError) {
-      setPatientError(patientError);
-      setBedError(bedError);
-      setNurseError(nurseError);
-      return false;
-    }
-    return true;
+  function onUpdateAvatars(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+        console.log(res.data[0].id);
+      })
+      .catch((err) => {});
   }
   function onChangePatientName(e) {
     setPatient(e.target.value);
@@ -154,15 +122,23 @@ function PatientItem(props) {
     setChart(e.target.value);
     setValidChart(false);
   }
-  function onChangeBedId(e) {
-    setBedId(e.target.value);
-    setValidBed(false);
+  function onChangePatientName(e) {
+    setPatient(e.target.value);
+    setValidPatient(false);
   }
-  function onChangeNurseId(e) {
-    setNurseId(e.target.value);
-    setValidNurse(false);
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
   }
-
+  function onChangeCityId(e) {
+    setCityId(e.target.value);
+    setValidCity(false);
+  }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
   function onToggleModals(e) {
     setModals(!modals);
   }
@@ -177,16 +153,15 @@ function PatientItem(props) {
     e.preventDefault();
     const isValid = validate();
     const body = {
-      patientName: patient,
-      chartNumber: chart,
-      bedId: bedId,
-      nurseId: nurseId,
-      status: true,
+      areaName: patient,
+      price: chart,
+      description: description,
+      cityId: cityId,
+      imageId: [`${imageId}`],
     };
     if (isValid) {
       return onUpDatePatient(idPatient, body)
         .then((res) => {
-          !status && onUpDateStatus(idPatient);
           notifytoast("success", "Saved successfully");
           setTimeout(() => {
             setModals3(!modals3);
@@ -200,65 +175,25 @@ function PatientItem(props) {
     }
   }
 
-  var elmBed = Array.isArray(getBed)
-    ? getBed.map((option, i) => {
+  var elmBed = Array.isArray(getCity)
+    ? getCity.map((option, i) => {
         return (
           <option key={i} value={option.id}>
-            {option.bedName}
+            {option.cityName}
           </option>
         );
       })
     : "";
-  var elmNurse = Array.isArray(getNurse)
-    ? getNurse.map((option, i) => {
-        return (
-          <option key={i} value={option.id}>
-            {option.nurseName}
-          </option>
-        );
-      })
-    : "";
+
   return (
     <tr key={index}>
       <td>{index + 1 + (currentPage - 1) * pageSize}</td>
-      <td>{item.patientName}</td>
-      <td>{item.chartNumber}</td>
-      <td>{item.bed ? item.bed.bedName : ""}</td>
-      <td>{item.nurse ? item.nurse.nurseName : ""}</td>
-      <td>
-        <Switch checked={item.status} onChange={onToggleModals}></Switch>
-        <Modal isOpen={modals} className="modals modal-dialog-centered">
-          <ModalHeader
-            toggle={onToggleModals}
-            className="modals-header"
-          ></ModalHeader>
-          <ModalBody>
-            <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to {item.status ? "inactivate" : "activate"} this
-              patient?
-            </p>
-          </ModalBody>
-          <ModalFooter className="modals-footer">
-            <Button
-              color="primary"
-              onClick={() => {
-                onToggleModals();
-                if (!item.status) {
-                  onToggleModalsEdit(item);
-                } else {
-                  onChangeStatus(item);
-                }
-              }}
-            >
-              Submit
-            </Button>{" "}
-            &nbsp;
-            <Button color="danger" onClick={onToggleModals}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
-      </td>
+      <td>{item.areaName}</td>
+      <td>{item.price}</td>
+      <td>{item.__cities__.cityName}</td>
+      <td>{item.createdAt}</td>
+      <td>{item.__cities__.__countries__.countryName}</td>
+      <td>{item.description}</td>
       <td>
         <button
           type="button"
@@ -272,10 +207,10 @@ function PatientItem(props) {
           children={
             <Form>
               <FormGroup className="mb-3">
-                <Label>Patient Name</Label>
+                <Label>Tour Name</Label>
                 <Input
                   type="text"
-                  placeholder="Patient Name"
+                  placeholder="Tour Name"
                   autoComplete="patientname"
                   value={patient}
                   maxLength="50"
@@ -286,14 +221,15 @@ function PatientItem(props) {
                   <FormFeedback>{patientError}</FormFeedback>
                 ) : null}
               </FormGroup>
+
               <FormGroup className="mb-3">
-                <Label>Chart Number</Label>
+                <Label>Price</Label>
                 <Input
                   type="number"
+                  onKeyDown={onChangeChartNumber}
                   placeholder="Chart number"
                   autoComplete="chart"
                   value={chart}
-                  onKeyDown={onChangeChartNumber}
                   onChange={onChangeChartNumber}
                   invalid={validChart}
                 />
@@ -301,40 +237,57 @@ function PatientItem(props) {
                   <FormFeedback>{chartNumberError}</FormFeedback>
                 ) : null}
               </FormGroup>
+              <FormGroup className="mb-3">
+                <Label for="Email">Image</Label>
+                <CustomInput
+                  type="file"
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
+                />
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
+              </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file ? file : image}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
               <FormGroup>
-                <Label>Bed Number</Label>
+                <Label>City</Label>
                 <CustomInput
                   name="select"
                   id="select"
                   type="select"
-                  onChange={onChangeBedId}
-                  value={bedId}
-                  invalid={validBed}
+                  onChange={onChangeCityId}
+                  value={cityId}
+                  invalid={validCity}
                   required
                 >
-                  {bed ? (
-                    <option selected>{bed}</option>
+                  {city ? (
+                    <option value={cityId}>{city}</option>
                   ) : (
-                    <option selected>choose a Bed</option>
+                    <option selected>choose a City</option>
                   )}
+
                   {elmBed}
                 </CustomInput>
-                {bedError ? <FormFeedback>{bedError}</FormFeedback> : null}
+                {cityError ? <FormFeedback>{cityError}</FormFeedback> : null}
               </FormGroup>
-
               <FormGroup className="mb-3">
-                <Label>Nurse Name</Label>
-                <CustomInput
-                  type="select"
-                  name="select"
-                  onChange={onChangeNurseId}
-                  value={nurseId}
-                  invalid={validNurse}
-                >
-                  <option selected>choose a Nurse</option>
-                  {elmNurse}
-                </CustomInput>
-                {nurseError ? <FormFeedback>{nurseError}</FormFeedback> : null}
+                <Label>Description</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Description"
+                  value={description}
+                  onChange={onChangeDescription}
+                  // invalid={validPatient}
+                />
+                {patientError ? (
+                  <FormFeedback>{patientError}</FormFeedback>
+                ) : null}
               </FormGroup>
             </Form>
           }
@@ -357,7 +310,7 @@ function PatientItem(props) {
           ></ModalHeader>
           <ModalBody>
             <p className="text-center font-weight-bold" style={{ margin: 0 }}>
-              Do you want to delete this patient?
+              Do you want to delete this tour?
             </p>
           </ModalBody>
           <ModalFooter className="modals-footer">

@@ -115,7 +115,7 @@ function Admin(props) {
         .then((res) => {
           notifytoast("success", "Created successfully");
           setTimeout(() => {
-            props.history.push(`/admin/hotels${props.location.search}`);
+            props.history.push(`/admin/tours`);
           }, 1000);
         })
         .catch((err) => {

@@ -10,34 +10,29 @@ import {
   Label,
   FormGroup,
   FormFeedback,
+  CustomInput,
 } from "reactstrap";
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 
 import _ from "lodash";
-import {
-  onDetailBeds,
-  onCreateBeds,
-  onUpDateBeds,
-  onShowRoom,
-} from "../../../apis/beds";
+import { onDetailBeds, onCreateBeds } from "../../../apis/countries";
+import { onUploadImage } from "../../../apis/hotels";
 function Admin(props) {
   const [detail, setDetail] = useState(null);
   const [bedName, setBedName] = useState(null);
   const [bedError, setBedError] = useState(null);
+  const [image, setImage] = useState();
+  const [imageId, setImageId] = useState();
   const [validBed, setValidBed] = useState(false);
   const [getRoom, setGetRoom] = useState(null);
   const [roomId, setRoomId] = useState(null);
+  const [file, setFile] = useState(null);
   const { params } = props.match;
   useEffect(() => {
-    if (_.isEmpty(params)) {
-      GetRoom();
-    } else {
-      detailBed();
-      GetRoom();
-    }
-  }, []);
+    onUpdateAvatars();
+  }, [image]);
   const detailBed = async () => {
     try {
       var res = await onDetailBeds(params.id);
@@ -60,14 +55,6 @@ function Admin(props) {
     }
     return true;
   }
-  const GetRoom = async () => {
-    try {
-      var room = await onShowRoom();
-      setGetRoom(room.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   function onChangeBedName(e) {
     setBedName(e.target.value);
@@ -76,20 +63,26 @@ function Admin(props) {
   function onChangeRoomId(e) {
     setRoomId(e.target.value);
   }
+  async function onChangeImage(e) {
+    if (e.target.files && e.target.files[0]) {
+      setFile(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  }
 
   function onSubmit(e) {
     e.preventDefault();
     const isValid = validate();
     const body = {
       countryName: bedName,
-      imageId: ["string"],
+      imageId: [imageId],
     };
     if (isValid) {
       return onCreateBeds(body)
         .then((res) => {
           notifytoast("success", "Created successfully");
           setTimeout(() => {
-            props.history.push("/admin/beds");
+            props.history.push("/admin/countries");
           }, 1000);
         })
         .catch((err) => {
@@ -98,36 +91,16 @@ function Admin(props) {
         });
     }
   }
-  function onDetail(e) {
-    e.preventDefault();
-    const isValid = validate();
-    const body = {
-      countryName: bedName,
-      imageId: "",
-    };
-    if (isValid) {
-      return onUpDateBeds(params.id, body)
-        .then((res) => {
-          notifytoast("success", "Saved successfully");
-          setTimeout(() => {
-            props.history.push("/admin/beds");
-          }, 1000);
-        })
-        .catch((err) => {
-          console.log(err.response);
-          notifytoast("error", err.response.data.message);
-        });
-    }
-  }
-  var elOption = Array.isArray(getRoom)
-    ? getRoom.map((option, i) => {
-        return (
-          <option key={i} value={option.id}>
-            {option.roomName}
-          </option>
-        );
+  function onUpdateAvatars(e) {
+    const formData = new FormData();
+    formData.append("files", image);
+    return onUploadImage(formData)
+      .then((res) => {
+        setImageId(res.data[0].id);
+        console.log(res.data[0].id);
       })
-    : "";
+      .catch((err) => {});
+  }
   return (
     <Row>
       <Col xl="6" md="6" xs="12" className="mx-auto">
@@ -146,19 +119,24 @@ function Admin(props) {
                 />
                 {bedError ? <FormFeedback>{bedError}</FormFeedback> : null}
               </FormGroup>
-
               <FormGroup className="mb-3">
-                <Label>Image</Label>
-                <Input
+                <Label for="Email">Image</Label>
+                <CustomInput
                   type="file"
-                  name="select"
-                  onChange={onChangeRoomId}
-                  value={roomId}
+                  label={image || "choose an image file"}
+                  onChange={onChangeImage}
                 />
-                {/* <option selected>choose a room</option>
-                  {elOption}
-                </Input> */}
+
+                {/* {priceError ? <FormFeedback>{priceError}</FormFeedback> : null} */}
               </FormGroup>
+              <img
+                id="frame"
+                alt="your image"
+                src={file}
+                name="aboutme"
+                border="0"
+                className="image-upload"
+              />
 
               <Button color="success">Submit</Button>
             </Form>

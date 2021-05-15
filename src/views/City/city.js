@@ -55,9 +55,9 @@ function Admin() {
       const result = await onShowlistNurse(currentPage, pageSize, textSearch);
       console.log(result);
       const { data } = result;
-      setListNurse(data.data);
-      setTotalCout(data.pagitation.totalCount);
-      setTotalPage(data.pagitation.totalPage);
+      setListNurse(data.items);
+      setTotalCout(data.meta.totalItems);
+      setTotalPage(data.meta.totalPages);
       if (currentPage !== 1 && data.data.length === 0) {
         setCurrentPage(currentPage - 1);
       }
@@ -124,7 +124,7 @@ function Admin() {
       {loading ? <Loading /> : ""}
       <div className="animated fadeIn">
         <Row>
-          <Col xs="9" lg="4">
+          {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
                 placeholder="Nurse name..."
@@ -138,7 +138,7 @@ function Admin() {
                 ></Button>
               </InputGroupAddon>
             </InputGroup>
-          </Col>
+          </Col> */}
           <Col xs="3" lg="3">
             <Link
               to="/admin/nurses/create-nurse"
