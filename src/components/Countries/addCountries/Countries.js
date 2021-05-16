@@ -15,7 +15,8 @@ import {
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
-
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import _ from "lodash";
 import { onDetailBeds, onCreateBeds } from "../../../apis/countries";
 import { onUploadImage } from "../../../apis/hotels";
@@ -130,12 +131,26 @@ function Admin(props) {
               />
               <FormGroup className="mb-3">
                 <Label>Description</Label>
-                <Input
-                  type="textarea"
-                  placeholder="Description"
-                  value={description}
-                  onChange={onChangeDescription}
-                  // invalid={validPatient}
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={description}
+                  onReady={(editor) => {
+                    // You can store the "editor" and use when it is needed.
+                    console.log("Editor is ready to use!", editor);
+                  }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setDescription(data);
+                    console.log(description);
+                  }}
+                  onBlur={(event, editor) => {
+                    const data = editor.getData();
+                    console.log("Blur.", data);
+                  }}
+                  onFocus={(event, editor) => {
+                    const data = editor.getData();
+                    console.log("Blur.", data);
+                  }}
                 />
               </FormGroup>
               <Button color="success">Submit</Button>

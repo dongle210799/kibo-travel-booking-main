@@ -15,7 +15,8 @@ import {
 import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
-
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import _ from "lodash";
 import { onCreatePatient, onShowcity } from "../../../apis/tour";
 import { onUploadImage } from "../../../apis/hotels";
@@ -36,6 +37,8 @@ function Patient(props) {
   const [validChart, setValidChart] = useState(false);
   const [validCity, setValidCity] = useState(false);
   const { params } = props.match;
+  console.log(description);
+
   useEffect(() => {
     GetCity();
   }, []);
@@ -106,6 +109,7 @@ function Patient(props) {
       .catch((err) => {});
   }
   function onSubmit(e) {
+    console.log(description);
     e.preventDefault();
     const isValid = validate();
     const body = {
@@ -145,7 +149,7 @@ function Patient(props) {
         <Card className="mx-4">
           <CardBody className="p-8">
             <Form onSubmit={onSubmit}>
-              <h1>{params.id ? "Patient Detail" : "Create Patient"}</h1>
+              <h1>Create Tour</h1>
               <FormGroup className="mb-3">
                 <Label>Tour Name</Label>
                 <Input
@@ -214,12 +218,25 @@ function Patient(props) {
               </FormGroup>
               <FormGroup className="mb-3">
                 <Label>Description</Label>
-                <Input
-                  type="textarea"
-                  placeholder="Description"
-                  value={description}
-                  onChange={onChangeDescription}
-                  // invalid={validPatient}
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={description}
+                  onReady={(editor) => {
+                    // You can store the "editor" and use when it is needed.
+                    console.log("Editor is ready to use!", editor);
+                  }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setDescription(data);
+                  }}
+                  onBlur={(event, editor) => {
+                    const data = editor.getData();
+                    setDescription(data);
+                  }}
+                  onFocus={(event, editor) => {
+                    const data = editor.getData();
+                    setDescription(data);
+                  }}
                 />
               </FormGroup>
 

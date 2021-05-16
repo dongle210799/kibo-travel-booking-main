@@ -25,6 +25,11 @@ export default {
       icon: "icon-people",
     },
     {
+      name: "Location",
+      url: "/admin/location",
+      icon: "icon-map",
+    },
+    {
       name: "Cities",
       url: "/admin/city",
       icon: "icon-people",

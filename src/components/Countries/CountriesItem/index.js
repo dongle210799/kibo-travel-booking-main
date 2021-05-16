@@ -169,7 +169,7 @@ function BedItem(props) {
           ""
         )}
       </td>
-      <td>{item.description}</td>
+      <td dangerouslySetInnerHTML={{ __html: item.description }}></td>
       <td>
         <button
           type="button"

@@ -191,7 +191,7 @@ function PatientItem(props) {
       <td>{item.__cities__.cityName}</td>
       <td>{item.createdAt}</td>
       <td>{item.__cities__.__countries__.countryName}</td>
-      <td>{item.description}</td>
+      <td dangerouslySetInnerHTML={{ __html: item.description }}></td>
       <td>
         <button
           type="button"

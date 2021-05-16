@@ -1,6 +1,7 @@
 import React from "react";
 
 const User = React.lazy(() => import("./views/User/user"));
+const Location = React.lazy(() => import("./views/Location/index"));
 const Patients = React.lazy(() => import("./views/Tour/tour"));
 const Bed = React.lazy(() => import("./views/Countries/countries"));
 const Nurse = React.lazy(() => import("./views/City/city"));
@@ -78,6 +79,7 @@ const routes = [
     component: patient,
   },
   { path: "/admin/tours", name: "Patients", component: Patients },
+  { path: "/admin/Location", name: "Patients", component: Location },
   { path: "/admin/countries", name: "Beds", component: Bed },
   { path: "/admin/city", name: "Nurses", component: Nurse },
   { path: "/admin/hotels", name: "Rooms", component: Room },
