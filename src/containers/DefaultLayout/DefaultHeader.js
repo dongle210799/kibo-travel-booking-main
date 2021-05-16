@@ -177,9 +177,9 @@ function DefaultHeader(props) {
           </DropdownToggle>
 
           <DropdownMenu right>
-            <DropdownItem onClick={onToggleModals}>
+            {/* <DropdownItem onClick={onToggleModals}>
               <i className="fa fa-user"></i> Profile
-            </DropdownItem>
+            </DropdownItem> */}
             <Modal isOpen={modals} className="modals modal-dialog-centered">
               <ModalHeader
                 toggle={onToggleModals}

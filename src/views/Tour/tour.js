@@ -140,7 +140,7 @@ function Patients(props) {
           </Col> */}
           <Col xs="3" lg="3">
             <Link
-              to="/admin/patients/create-patient"
+              to="/admin/tours/create-tour"
               className="btn btn-primary mb10 mr5"
             >
               <span className="fa fa-plus mr5"></span>Create Tour

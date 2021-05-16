@@ -31,9 +31,9 @@ const routes = [
     component: user,
   },
   {
-    path: "/admin/rooms/create-room",
+    path: "/admin/hotels/create-hotel",
     exact: true,
-    name: "Create Room",
+    name: "Create Hotels",
     component: room,
   },
   {
@@ -43,9 +43,9 @@ const routes = [
     component: room,
   },
   {
-    path: "/admin/nurses/create-nurse",
+    path: "/admin/cities/create-city",
     exact: true,
-    name: "Create Nurse",
+    name: "Create City",
     component: nurse,
   },
   {
@@ -55,9 +55,9 @@ const routes = [
     component: nurse,
   },
   {
-    path: "/admin/beds/create-bed",
+    path: "/admin/countries/create-country",
     exact: true,
-    name: "Create Bed",
+    name: "Create Country",
     component: bed,
   },
   {
@@ -67,9 +67,9 @@ const routes = [
     component: bed,
   },
   {
-    path: "/admin/patients/create-patient",
+    path: "/admin/tours/create-tour",
     exact: true,
-    name: "Create Patient",
+    name: "Create Tour",
     component: patient,
   },
   {
@@ -78,11 +78,11 @@ const routes = [
     name: "Detail Patient",
     component: patient,
   },
-  { path: "/admin/tours", name: "Patients", component: Patients },
-  { path: "/admin/Location", name: "Patients", component: Location },
-  { path: "/admin/countries", name: "Beds", component: Bed },
-  { path: "/admin/city", name: "Nurses", component: Nurse },
-  { path: "/admin/hotels", name: "Rooms", component: Room },
+  { path: "/admin/tours", name: "Tours", component: Patients },
+  { path: "/admin/Location", name: "location", component: Location },
+  { path: "/admin/countries", name: "countries", component: Bed },
+  { path: "/admin/city", name: "Cities", component: Nurse },
+  { path: "/admin/hotels", name: "Hotels", component: Room },
 ];
 
 export default routes;

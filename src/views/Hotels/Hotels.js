@@ -139,7 +139,7 @@ function Room() {
           </Col> */}
           <Col xs="3" lg="3">
             <Link
-              to="/admin/rooms/create-room"
+              to="/admin/hotels/create-hotel"
               className="btn btn-primary mb10 mr5"
             >
               <span className="fa fa-plus mr5"></span>Create Hotel

@@ -138,7 +138,7 @@ function Bed() {
           </Col> */}
           <Col xs="3" lg="3">
             <Link
-              to="/admin/beds/create-bed"
+              to="/admin/countries/create-country"
               className="btn btn-primary mb10 mr5"
             >
               <span className="fa fa-plus mr5"></span>Create Country
