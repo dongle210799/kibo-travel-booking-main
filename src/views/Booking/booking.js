@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import PatientItem from "../../components/tour/tourItem/tourItem";
-import {
-  onShowListPatient,
-  onUpDateStatus,
-  onDeletePatient,
-} from "../../apis/tour";
-import { ToastContainer } from "react-toastify";
+import NurseItem from "../../components/city/cityItem";
+import { onShowBooking, onShowBookingHotel } from "../../apis/booking";
 import Loading from "../../components/loading/loading";
+import { ToastContainer } from "react-toastify";
 import { notifytoast } from "../../helper/index";
 import "react-toastify/dist/ReactToastify.css";
 import PaginationApp from "../../components/Pagination/pagination";
-import { Col, Row, Table } from "reactstrap";
+import {
+  InputGroup,
+  InputGroupAddon,
+  Button,
+  Input,
+  Col,
+  Row,
+  Table,
+} from "reactstrap";
+import BookingItem from "../../components/Booking/booking_tour";
+import BookingHotel from "../../components/Booking/booking_hotels";
 
-function Patients(props) {
-  const [listPatient, setListPatient] = useState([]);
+function Admin() {
+  const [listBooking, setListBooking] = useState([]);
+  const [listBookingHotel, setListBookingHotel] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [textSearch, setTextSearch] = useState("");
@@ -23,15 +30,17 @@ function Patients(props) {
   const [totalCout, setTotalCout] = useState();
   const [edit, setEdit] = useState(false);
   useEffect(() => {
-    getListPatient();
+    getListNurse();
+    getListHotel();
   }, [currentPage, textSearch, edit]);
 
-  const getListPatient = async () => {
+  const getListNurse = async () => {
     try {
       setLoading(true);
-      const res = await onShowListPatient(currentPage, pageSize, textSearch);
+      const res = await onShowBooking();
       setLoading(false);
-      setListPatient(res.data.items);
+      console.log(res.data);
+      setListBooking(res.data.items);
       setCurrentPage(res.data.meta.currentPage);
       setPageSize(res.data.meta.itemsPerPage);
       setTotalCout(res.data.meta.totalItems);
@@ -41,61 +50,62 @@ function Patients(props) {
       setLoading(false);
     }
   };
-  async function onChangeStatus(item) {
-    await onUpDateStatus(item.id);
-    getListPatient();
-    notifytoast(
-      "success",
-      `${item.status ? "Inactivated" : "Activated"} successfully`
-    );
-  }
-  async function onDelete(id) {
+  const getListHotel = async () => {
     try {
-      await onDeletePatient(id);
-      const result = await onShowListPatient(currentPage, pageSize, textSearch);
-      console.log(result);
-      const { data } = result;
-      setListPatient(data.items);
-      setTotalCout(data.meta.totalItems);
-      setTotalPage(data.meta.totalPages);
-      if (currentPage !== 1 && data.data.length === 0) {
-        setCurrentPage(currentPage - 1);
-      }
-      notifytoast("success", "Deleted successfully");
-    } catch (error) {
-      console.log(error.response);
-      notifytoast("error", error.response.data.message);
-    }
-  }
+      setLoading(true);
+      const res = await onShowBookingHotel();
+      setLoading(false);
 
-  function onHandleSearch(e) {
-    e.preventDefault();
-    setTextSearch(e.target.value);
-    setCurrentPage(1);
-  }
-  async function onSearch(e) {
-    await getListPatient();
-  }
+      setListBookingHotel(res.data.items);
+      // setCurrentPage(res.data.meta.currentPage + currentPage);
+      // setPageSize(res.data.meta.itemsPerPage + pageSize);
+      // setTotalCout(res.data.meta.totalItems + totalCout);
+      // setTotalPage(res.data.meta.totalPages + totalPage);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   function handleClickItem(newPage) {
     setCurrentPage(newPage);
   }
-  function onEdit2(e) {
-    setEdit(!edit);
-  }
-  function showPatient(listPatient) {
+  function showNurse(listBooking) {
     var result = null;
-    if (listPatient.length > 0) {
-      result = listPatient.map((item, index) => {
+    if (listBooking.length > 0) {
+      result = listBooking.map((item, index) => {
         return (
-          <PatientItem
+          <BookingItem
             key={index}
             item={item}
             pageSize={pageSize}
             currentPage={currentPage}
-            onChangeStatus={onChangeStatus}
-            onDelete={onDelete}
             index={index}
-            onEdit2={onEdit2}
+          />
+        );
+      });
+    } else {
+      return (
+        <tr>
+          <td colSpan={10} style={{ textAlign: "center" }}>
+            No Data...
+          </td>
+        </tr>
+      );
+    }
+    return result;
+  }
+  function showHotel(listBooking) {
+    var result = null;
+    if (listBooking.length > 0) {
+      result = listBooking.map((item, index) => {
+        return (
+          <BookingHotel
+            key={index}
+            item={item}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            index={index + currentPage}
           />
         );
       });
@@ -118,7 +128,7 @@ function Patients(props) {
           {/* <Col xs="9" lg="4">
             <InputGroup>
               <Input
-                placeholder="Patient Name..."
+                placeholder="Nurse name..."
                 value={textSearch}
                 onChange={onHandleSearch}
               />
@@ -130,39 +140,41 @@ function Patients(props) {
               </InputGroupAddon>
             </InputGroup>
           </Col> */}
-          <Col xs="3" lg="3">
+          {/* <Col xs="3" lg="3">
             <Link
-              to="/admin/tours/create-tour"
+              to="/admin/nurses/create-nurse"
               className="btn btn-primary mb10 mr5"
             >
-              <span className="fa fa-plus mr5"></span>Create Tour
+              <span className="fa fa-plus mr5"></span>Create city
             </Link>
-          </Col>
+          </Col> */}
           <Col xs="12" lg="12">
             <Table responsive striped bordered hover className="text-center">
               <thead>
                 <tr>
                   <th>No.</th>
+                  <th>User Name</th>
                   <th>Tour Name</th>
-                  <th>Price</th>
-                  <th>City</th>
-                  <th>Created At</th>
-                  <th>Country</th>
-                  <th>Description</th>
-                  <th>Action</th>
+                  <th>Hotel Name</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Number Of Person</th>
                 </tr>
               </thead>
-              <tbody>{showPatient(listPatient)}</tbody>
+              <tbody>
+                {showNurse(listBooking)}
+                {showHotel(listBookingHotel)}
+              </tbody>
             </Table>
 
-            <PaginationApp
-              listAdmin={listPatient}
+            {/* <PaginationApp
+              listAdmin={listBooking}
               currentPage={currentPage}
               pageSize={pageSize}
               totalCount={totalCout}
               totalPage={totalPage}
               handleClickItem={handleClickItem}
-            />
+            /> */}
             <ToastContainer />
           </Col>
         </Row>
@@ -171,4 +183,4 @@ function Patients(props) {
   );
 }
 
-export default Patients;
+export default Admin;

@@ -6,7 +6,7 @@ const Patients = React.lazy(() => import("./views/Tour/tour"));
 const Bed = React.lazy(() => import("./views/Countries/countries"));
 const Nurse = React.lazy(() => import("./views/City/city"));
 const Room = React.lazy(() => import("./views/Hotels/Hotels"));
-
+const Booking = React.lazy(() => import("./views/Booking/booking"));
 const user = React.lazy(() => import("./components/User/addUser/user"));
 const room = React.lazy(() => import("./components/Hotel/addHotel/hotels"));
 const nurse = React.lazy(() => import("./components/city/addCity/index"));
@@ -24,6 +24,13 @@ const routes = [
     name: "Create user",
     component: user,
   },
+  {
+    path: "/admin/bookings",
+    exact: true,
+    name: "Bookings",
+    component: Booking,
+  },
+
   {
     path: "/admin/users/:id",
     exact: true,

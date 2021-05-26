@@ -44,6 +44,11 @@ export default {
       url: "/admin/hotels",
       icon: "icon-list",
     },
+    {
+      name: "Bookings",
+      url: "/admin/bookings",
+      icon: "icon-eye",
+    },
     // {
     //   name: "Logout",
     //   url: "/login",
