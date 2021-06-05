@@ -110,3 +110,16 @@ table {
   transform: translate(-50%, -50%);
   z-index: 9999;
 }
+.description{
+  
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width: 200px;
+  height: 100px;
+}
+.description:hover {
+  overflow:visible;
+  width: auto;
+  height: auto;
+}

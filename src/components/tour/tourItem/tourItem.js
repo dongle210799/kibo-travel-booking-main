@@ -191,7 +191,12 @@ function PatientItem(props) {
       <td>{item.__cities__.cityName}</td>
       <td>{item.createdAt}</td>
       <td>{item.__cities__.__countries__.countryName}</td>
-      <td dangerouslySetInnerHTML={{ __html: item.description }}></td>
+      <td>
+        <p
+          dangerouslySetInnerHTML={{ __html: item.description }}
+          className="description"
+        ></p>
+      </td>
       <td>
         <button
           type="button"
